@@ -1,0 +1,186 @@
+================================================================================
+                        DIABETOLOGICKÝ PORADCE
+                Demo konverzace — Prezentace funkcionality aplikace
+                        ANOTE Mobile | Březen 2026
+================================================================================
+
+
+PŘEHLED POKRYTÝCH TÉMAT
+────────────────────────────────────────────────────────────────────────────────
+  Téma                                    | Počet otázek | Status
+  ────────────────────────────────────────|──────────────|────────────────
+  Léčba inzulínem                         | 5 otázek     | Otestováno
+  Kontinuální monitorace glukózy (CGM)    | 4 otázky     | Otestováno
+  Péče o nohy při diabetu                 | Připraveno   | Dostupné
+  Fyzická aktivita s diabetem             | 4 otázky     | Otestováno
+────────────────────────────────────────────────────────────────────────────────
+
+
+================================================================================
+                          KOMPLETNÍ KONVERZACE
+================================================================================
+
+
+                              ── 01:59 ──
+
+[BOT] Diabetologický poradce
+    Dobrý den! Jsem váš diabetologický poradce. Mohu vám pomoci s informacemi o:
+
+    • Léčbě inzulínem — zahájení, typy inzulínu, dávkování, aplikace
+    • Kontinuální monitoraci glukózy (CGM) — princip, systémy, interpretace
+    • Péči o nohy při diabetu — prevence, rizika, postupy
+    • Fyzické aktivitě s diabetem — doporučení, typy, rizika
+
+    S čím vám mohu pomoci?
+
+────────────────────────────────────────────────────────────────────────────────
+
+[UŽIVATEL]
+    Léčbě inzulínem — zahájení, typy inzulínu, dávkování, aplikace
+
+────────────────────────────────────────────────────────────────────────────────
+
+[BOT]
+    Dobrý den! Jsem tu, abych vám pomohl s informacemi o léčbě inzulínem.
+    Můžeme probrat zahájení léčby, typy inzulínu, dávkování i správnou
+    aplikaci.
+
+    Můžete mi prosím říct, jaký typ diabetu máte a zda už inzulín užíváte,
+    nebo teprve začínáte? To mi pomůže lépe poradit.
+
+────────────────────────────────────────────────────────────────────────────────
+
+                              ── 02:00 ──
+
+[UŽIVATEL]
+    Mám diabetes 2. typu a doktor mi předepsal inzulín. Co mám vědět?
+
+────────────────────────────────────────────────────────────────────────────────
+
+[BOT]
+    U diabetu 2. typu se inzulín často přidává, když tabletková léčba
+    nestačí. Na začátku léčby je obvyklé podávání jedné dávky bazálního
+    inzulínu, většinou večer před spaním. Tento inzulín pokrývá potřebu
+    inzulínu během dne i noci.
+
+    Důležité je:
+    - Inzulín se aplikuje podkožně injekcí.
+    - Dávku určí lékař podle vaší váhy, stravy a aktivity, ale může být
+      potřeba ji postupně upravovat.
+    - Dodržujte diabetickou dietu, zejména pravidelný příjem sacharidů.
+    - Pravidelně měřte glykémii, abyste viděl, jak inzulín funguje.
+    - Inzulínové aplikace střídejte místa vpichu (břicho, paže, stehna,
+      hýždě).
+    - Pokud máte otázky ohledně dávkování nebo aplikace, vždy se poraďte
+      s lékařem.
+
+    Chcete, abych vám vysvětlil, jak správně aplikovat inzulín nebo jak se
+    měří glykémie? Nebo máte jinou otázku?
+
+────────────────────────────────────────────────────────────────────────────────
+
+                              ── 02:02 ──
+
+[UŽIVATEL]
+    Co se stane, když si zapomenu dát inzulín?
+    Jaké jsou vedlejší účinky inzulínu?
+    Jak mám inzulín skladovat?
+    Co je CGM a jak to funguje?
+    Jaké CGM systémy existují v Česku?
+    Jak mám číst grafy z CGM?
+    Co znamená šipka nahoru na senzoru?
+    Hradí CGM pojišťovna?
+    Jaké cvičení je vhodné při diabetu 2. typu?
+    Můžu běhat maratón s diabetem?
+    Co mám dělat, když mi při cvičení klesne cukr?
+    Mám cvičit před jídlem nebo po jídle?
+
+────────────────────────────────────────────────────────────────────────────────
+
+[BOT]
+    Rád vám postupně odpovím na všechny vaše otázky. Začneme?
+
+    1. CO SE STANE, KDYŽ SI ZAPOMENETE DÁT INZULÍN?
+       U diabetu 2. typu může chybějící dávka inzulínu vést ke zvýšení
+       hladiny cukru v krvi (hyperglykémii). Pokud se to stane jednou,
+       sledujte glykémii a kontaktujte lékaře, pokud se cukr výrazně zvýší
+       nebo máte příznaky jako únava, žízeň, časté močení.
+
+    2. VEDLEJŠÍ ÚČINKY INZULÍNU?
+       Nejčastější je hypoglykémie (nízký cukr), která se projevuje třesem,
+       pocením, nervozitou. Dále může dojít k místním reakcím v místě vpichu
+       (zarudnutí, otok). O dalším řešení vždy konzultujte s lékařem.
+
+    3. JAK INZULÍN SKLADOVAT?
+       Neotevřený inzulín uchovávejte v lednici (2–8 °C), ale nesmí
+       zmrznout. Po otevření je vhodné ho uchovávat při pokojové teplotě
+       (20–25 °C) a používat do 28 dnů. Chraňte ho před přehřátím a přímým
+       sluncem.
+
+    4. CO JE CGM A JAK FUNGUJE?
+       CGM (kontinuální monitorace glukózy) je systém, který měří hladinu
+       cukru v podkoží nepřetržitě pomocí senzoru. Data se přenášejí do
+       mobilu nebo jiného zařízení, kde vidíte aktuální hodnoty i trendy.
+
+    5. JAKÉ CGM SYSTÉMY EXISTUJÍ V ČESKU?
+       Mezi dostupné patří FreeStyle Libre 2 a 3, Dexcom G6 a G7,
+       Guardian 4, Simplera a další. Některé jsou bezkalibrační, jiné
+       vyžadují kalibraci.
+
+    6. JAK ČÍST GRAFY Z CGM?
+       Graf ukazuje průběh cukru v čase. Sledujte aktuální hodnotu,
+       trendovou šipku (směr a rychlost změny) a čas strávený v cílovém
+       rozmezí (TIR).
+
+    7. CO ZNAMENÁ ŠIPKA NAHORU NA SENZORU?
+       Šipka nahoru znamená, že hladina cukru rychle stoupá. Měli byste to
+       zohlednit při dávkování inzulínu, protože skutečná glykémie může být
+       už vyšší, než ukazuje aktuální hodnota.
+
+    8. HRADÍ CGM POJIŠŤOVNA?
+       Od 1.1.2026 hradí CGM všem pacientům léčeným 3 a více dávkami
+       inzulínu denně, bez ohledu na typ diabetu, pokud splní podmínky.
+       Existují plnohodnotná a limitovaná CGM s různými úhradami.
+
+    9. JAKÉ CVIČENÍ JE VHODNÉ PŘI DIABETU 2. TYPU?
+       Doporučuje se aerobní aktivita střední až vysoké intenzity (např.
+       chůze, jízda na kole) minimálně 150 minut týdně, odporové cvičení
+       2–3× týdně a cviky na flexibilitu a rovnováhu.
+
+   10. MŮŽU BĚHAT MARATÓN S DIABETEM?
+       S diabetem 2. typu je možné i náročnější sporty, ale je třeba
+       konzultovat s lékařem, mít dobrou kompenzaci a znát správné strategie
+       úpravy inzulínu a příjmu sacharidů.
+
+   11. CO DĚLAT, KDYŽ PŘI CVIČENÍ KLESNE CUKR?
+       Okamžitě přestaňte cvičit a rychle přijměte 15–20 g rychle
+       vstřebatelných sacharidů (např. hroznový cukr, džus). Po 15 minutách
+       zkontrolujte cukr a podle potřeby postup opakujte.
+
+   12. MÁM CVIČIT PŘED JÍDLEM NEBO PO JÍDLE?
+       Obvykle je lepší cvičit 1–2 hodiny po jídle, kdy je dostatek energie
+       a nižší riziko hypoglykémie. Při cvičení před jídlem je třeba počítat
+       s doplněním sacharidů a úpravou inzulínu.
+
+    Chcete, abych vám některé odpovědi rozvedl podrobněji? Nebo máte další
+    otázky?
+
+
+================================================================================
+                        DEMONSTROVANÉ FUNKCE
+================================================================================
+
+  Funkce               | Popis                                       | Status
+  ─────────────────────|─────────────────────────────────────────────|─────────
+  Výběr tématu         | Uživatel si zvolí oblast z nabídky          | Funkční
+  Kontextové otázky    | Bot se ptá na typ diabetu pro personalizaci | Funkční
+  Podrobné odpovědi    | Strukturované odpovědi s odrážkami           | Funkční
+  Multi-otázky         | Bot zvládá odpovědět na více otázek najednou| Funkční
+  Křížové témata       | Plynulý přechod mezi inzulínem, CGM, sportem| Funkční
+  Navazné otázky       | Bot nabízí další prohloubení tématu         | Funkční
+  Odkaz na lékaře      | Bot odkazuje na konzultaci s lékařem        | Funkční
+
+================================================================================
+Diabetologický poradce — ANOTE Mobile | Demo konverzace | Březen 2026
+Tento dokument byl vygenerován pro účely prezentace funkcionality aplikace.
+================================================================================

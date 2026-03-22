@@ -1,0 +1,140 @@
+@page "/"
+@rendermode InteractiveServer
+@inject MedicalAdvisorService AdvisorService
+@inject ConversationState ConversationState
+@inject IJSRuntime JS
+
+<PageTitle>Diabetologický poradce</PageTitle>
+
+<div class="chat-container">
+    <div class="chat-messages" id="chat-messages">
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            @foreach (var message in ConversationState.Messages)
+            {
+                <ChatMessageBubble Message="message" />
+            }
+        </MudContainer>
+    </div>
+
+    <div class="chat-input-area">
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            <div class="d-flex align-end gap-2">
+                <MudTextField @ref="_inputField"
+                              @bind-Value="_userInput"
+                              Placeholder="Napište svou zprávu..."
+                              Variant="Variant.Outlined"
+                              Sizing="InputSizing.Auto"
+                              MaxLines="5"
+                              Disabled="_isStreaming"
+                              Immediate="false"
+                              OnKeyDown="OnKeyDown"
+                              Class="flex-grow-1" />
+                <MudIconButton Icon="@Icons.Material.Filled.Send"
+                               Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               OnClick="SendMessage"
+                               Disabled="@(_isStreaming || string.IsNullOrWhiteSpace(_userInput))"
+                               Class="mb-1" />
+            </div>
+        </MudContainer>
+    </div>
+</div>
+
+@code {
+    private string _userInput = string.Empty;
+    private bool _isStreaming;
+    private MudTextField<string>? _inputField;
+    private CancellationTokenSource? _cts;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await ScrollToBottom();
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await SendMessage();
+        }
+    }
+
+    private async Task SendMessage()
+    {
+        var input = _userInput?.Trim();
+        if (string.IsNullOrWhiteSpace(input) || _isStreaming)
+            return;
+
+        _userInput = string.Empty;
+        _isStreaming = true;
+
+        // Add user message to UI display list only (service manages ChatHistory).
+        ConversationState.Messages.Add(new ChatMessage
+        {
+            Role = ChatRole.User,
+            Content = input,
+            Timestamp = DateTime.Now,
+        });
+        StateHasChanged();
+        await ScrollToBottom();
+
+        // Create placeholder streaming message for UI.
+        var streamingMessage = new ChatMessage
+        {
+            Role = ChatRole.Assistant,
+            Content = string.Empty,
+            Timestamp = DateTime.Now,
+            IsStreaming = true
+        };
+        ConversationState.Messages.Add(streamingMessage);
+        StateHasChanged();
+        await ScrollToBottom();
+
+        _cts = new CancellationTokenSource();
+
+        try
+        {
+            await foreach (var chunk in AdvisorService.StreamResponseAsync(input, ConversationState, _cts.Token))
+            {
+                streamingMessage.Content += chunk;
+                StateHasChanged();
+                await ScrollToBottom();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Streaming was cancelled
+        }
+        catch (Exception ex)
+        {
+            streamingMessage.Content += $"\n\n[Chyba: {ex.Message}]";
+        }
+        finally
+        {
+            streamingMessage.IsStreaming = false;
+            _isStreaming = false;
+            _cts?.Dispose();
+            _cts = null;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ScrollToBottom()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval",
+                "document.getElementById('chat-messages')?.scrollTo({top: document.getElementById('chat-messages').scrollHeight, behavior: 'smooth'})");
+        }
+        catch
+        {
+            // Ignore JS interop errors during prerendering
+        }
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+}

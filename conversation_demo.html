@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetologicky poradce — Demo konverzace</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 30px !important;
+            }
+            .chat-container {
+                page-break-inside: avoid;
+            }
+            .message {
+                page-break-inside: avoid;
+            }
+        }
+
+        .no-print {
+            text-align: center;
+            padding: 20px;
+            background: #1a73e8;
+            color: white;
+        }
+
+        .no-print button {
+            background: white;
+            color: #1a73e8;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 16px;
+            transition: transform 0.1s;
+        }
+
+        .no-print button:hover {
+            transform: scale(1.05);
+        }
+
+        .no-print span {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .page {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 48px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        }
+
+        /* Cover Section */
+        .cover {
+            text-align: center;
+            padding: 40px 0 32px;
+            border-bottom: 3px solid #1a73e8;
+            margin-bottom: 40px;
+        }
+
+        .cover .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .cover h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .cover h2 {
+            font-size: 18px;
+            font-weight: 400;
+            color: #5f6368;
+            margin-bottom: 16px;
+        }
+
+        .cover .meta {
+            font-size: 13px;
+            color: #9aa0a6;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a73e8;
+            margin: 36px 0 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8eaed;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 20px;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e8eaed;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .message:last-child {
+            margin-bottom: 0;
+        }
+
+        .message.bot {
+            flex-direction: row;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .message.bot .avatar {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+        }
+
+        .message.user .avatar {
+            background: #e8eaed;
+            color: #5f6368;
+        }
+
+        .bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .message.bot .bubble {
+            background: white;
+            border: 1px solid #e8eaed;
+            border-top-left-radius: 4px;
+        }
+
+        .message.user .bubble {
+            background: #1a73e8;
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .bubble ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .bubble li {
+            margin-bottom: 4px;
+        }
+
+        .bubble strong {
+            font-weight: 600;
+        }
+
+        .bubble .sub-heading {
+            font-weight: 600;
+            margin-top: 12px;
+            margin-bottom: 4px;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: #9aa0a6;
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        /* Summary Table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px;
+            font-size: 14px;
+        }
+
+        .summary-table th {
+            background: #1a73e8;
+            color: white;
+            padding: 10px 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .summary-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #e8eaed;
+        }
+
+        .summary-table tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.pass {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px;
+            border-top: 2px solid #e8eaed;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #9aa0a6;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Print Button Bar -->
+<div class="no-print">
+    <span>Pro export do PDF klikn&#283;te na tla&#269;&#237;tko nebo pou&#382;ijte Ctrl+P / Cmd+P</span>
+    <button onclick="window.print()">Exportovat do PDF</button>
+</div>
+
+<div class="page">
+
+    <!-- COVER -->
+    <div class="cover">
+        <div class="app-icon">&#9764;</div>
+        <h1>Diabetologick&#253; poradce</h1>
+        <h2>Demo konverzace &mdash; Prezentace funk&#269;nosti aplikace</h2>
+        <div class="meta">Medical Bot &bull; Verze demo &bull; B&#345;ezen 2026</div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <h3 class="section-header">P&#345;ehled pokryt&#253;ch t&#233;mat</h3>
+    <p class="section-desc">Chatbot pokr&#253;v&#225; 4 hlavn&#237; t&#233;matick&#233; oblasti diabetologick&#233; edukace:</p>
+
+    <table class="summary-table">
+        <tr>
+            <th>T&#233;ma</th>
+            <th>Po&#269;et ot&#225;zek</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>L&#233;&#269;ba inzul&#237;nem</td>
+            <td>5 ot&#225;zek</td>
+            <td><span class="badge pass">Otestov&#225;no</span></td>
+        </tr>
+        <tr>
+            <td>Kontinu&#225;ln&#237; monitorace gluk&#243;zy (CGM)</td>
+            <td>4 ot&#225;zky</td>
+            <td><span class="badge pass">Otestov&#225;no</span></td>
+        </tr>
+        <tr>
+            <td>P&#233;&#269;e o nohy p&#345;i diabetu</td>
+            <td>P&#345;ipraveno k testov&#225;n&#237;</td>
+            <td><span class="badge pass">Dostupn&#233;</span></td>
+        </tr>
+        <tr>
+            <td>Fyzick&#225; aktivita s diabetem</td>
+            <td>4 ot&#225;zky</td>
+            <td><span class="badge pass">Otestov&#225;no</span></td>
+        </tr>
+    </table>
+
+    <!-- CONVERSATION -->
+    <h3 class="section-header">Kompletn&#237; konverzace</h3>
+    <p class="section-desc">N&#225;sleduj&#237;c&#237; z&#225;znam ukazuje re&#225;ln&#233; interakce u&#382;ivatele s chatbotem.</p>
+
+    <div class="chat-container">
+
+        <div class="timestamp">01:59</div>
+
+        <!-- Bot: Welcome -->
+        <div class="message bot">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+                <strong>Diabetologick&#253; poradce</strong><br><br>
+                Dobr&#253; den! Jsem v&#225;&#353; diabetologick&#253; poradce. Mohu v&#225;m pomoci s informacemi o:
+                <ul>
+                    <li><strong>L&#233;&#269;b&#283; inzul&#237;nem</strong> &mdash; zah&#225;jen&#237;, typy inzul&#237;nu, d&#225;vkov&#225;n&#237;, aplikace</li>
+                    <li><strong>Kontinu&#225;ln&#237; monitoraci gluk&#243;zy (CGM)</strong> &mdash; princip, syst&#233;my, interpretace</li>
+                    <li><strong>P&#233;&#269;i o nohy p&#345;i diabetu</strong> &mdash; prevence, rizika, postupy</li>
+                    <li><strong>Fyzick&#233; aktivit&#283; s diabetem</strong> &mdash; doporu&#269;en&#237;, typy, rizika</li>
+                </ul>
+                S &#269;&#237;m v&#225;m mohu pomoci?
+            </div>
+        </div>
+
+        <!-- User: Topic selection -->
+        <div class="message user">
+            <div class="avatar">U</div>
+            <div class="bubble">
+                L&#233;&#269;b&#283; inzul&#237;nem &mdash; zah&#225;jen&#237;, typy inzul&#237;nu, d&#225;vkov&#225;n&#237;, aplikace
+            </div>
+        </div>
+
+        <!-- Bot: Follow-up -->
+        <div class="message bot">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+                Dobr&#253; den! Jsem tu, abych v&#225;m pomohl s informacemi o l&#233;&#269;b&#283; inzul&#237;nem. M&#367;&#382;eme probrat zah&#225;jen&#237; l&#233;&#269;by, typy inzul&#237;nu, d&#225;vkov&#225;n&#237; i spr&#225;vnou aplikaci.<br><br>
+                M&#367;&#382;ete mi pros&#237;m &#345;&#237;ct, jak&#253; typ diabetu m&#225;te a zda u&#382; inzul&#237;n u&#382;&#237;v&#225;te, nebo teprve za&#269;&#237;n&#225;te? To mi pom&#367;&#382;e l&#233;pe poradit.
+            </div>
+        </div>
+
+        <div class="timestamp">02:00</div>
+
+        <!-- User: Context -->
+        <div class="message user">
+            <div class="avatar">U</div>
+            <div class="bubble">
+                M&#225;m diabetes 2. typu a doktor mi p&#345;edepsal inzul&#237;n. Co m&#225;m v&#283;d&#283;t?
+            </div>
+        </div>
+
+        <!-- Bot: Insulin basics -->
+        <div class="message bot">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+                U diabetu 2. typu se inzul&#237;n &#269;asto p&#345;id&#225;v&#225;, kdy&#382; tabletkov&#225; l&#233;&#269;ba nesta&#269;&#237;. Na za&#269;&#225;tku l&#233;&#269;by je obvykl&#233; pod&#225;v&#225;n&#237; jedn&#233; d&#225;vky baz&#225;ln&#237;ho inzul&#237;nu, v&#283;t&#353;inou ve&#269;er p&#345;ed span&#237;m. Tento inzul&#237;n pokr&#253;v&#225; pot&#345;ebu inzul&#237;nu b&#283;hem dne i noci.
+                <br><br><strong>D&#367;le&#382;it&#233; je:</strong>
+                <ul>
+                    <li>Inzul&#237;n se aplikuje podko&#382;n&#283; injekc&#237;.</li>
+                    <li>D&#225;vku ur&#269;&#237; l&#233;ka&#345; podle va&#353;&#237; v&#225;hy, stravy a aktivity, ale m&#367;&#382;e b&#253;t pot&#345;eba ji postupn&#283; upravovat.</li>
+                    <li>Dodr&#382;ujte diabetickou dietu, zejm&#233;na pravideln&#253; p&#345;&#237;jem sacharid&#367;.</li>
+                    <li>Pravideln&#283; m&#283;&#345;te glyk&#233;mii, abyste vid&#283;l, jak inzul&#237;n funguje.</li>
+                    <li>Inzul&#237;nov&#233; aplikace st&#345;&#237;dejte m&#237;sta vpichu (b&#345;icho, pa&#382;e, stehna, h&#253;&#382;d&#283;).</li>
+                    <li>Pokud m&#225;te ot&#225;zky ohledn&#283; d&#225;vkov&#225;n&#237; nebo aplikace, v&#382;dy se pora&#271;te s l&#233;ka&#345;em.</li>
+                </ul>
+                <br>Chcete, abych v&#225;m vysv&#283;tlil, jak spr&#225;vn&#283; aplikovat inzul&#237;n nebo jak se m&#283;&#345;&#237; glyk&#233;mie? Nebo m&#225;te jinou ot&#225;zku?
+            </div>
+        </div>
+
+        <div class="timestamp">02:02</div>
+
+        <!-- User: Multiple questions -->
+        <div class="message user">
+            <div class="avatar">U</div>
+            <div class="bubble">
+                Co se stane, kdy&#382; si zapomenu d&#225;t inzul&#237;n?<br>
+                Jak&#233; jsou vedlej&#353;&#237; &#250;&#269;inky inzul&#237;nu?<br>
+                Jak m&#225;m inzul&#237;n skladovat?<br>
+                Co je CGM a jak to funguje?<br>
+                Jak&#233; CGM syst&#233;my existuj&#237; v &#268;esku?<br>
+                Jak m&#225;m &#269;&#237;st grafy z CGM?<br>
+                Co znamen&#225; &#353;ipka nahoru na senzoru?<br>
+                Hrad&#237; CGM poji&#353;&#357;ovna?<br>
+                Jak&#233; cvi&#269;en&#237; je vhodn&#233; p&#345;i diabetu 2. typu?<br>
+                M&#367;&#382;u b&#283;hat marat&#243;n s diabetem?<br>
+                Co m&#225;m d&#283;lat, kdy&#382; mi p&#345;i cvi&#269;en&#237; klesne cukr?<br>
+                M&#225;m cvi&#269;it p&#345;ed j&#237;dlem nebo po j&#237;dle?
+            </div>
+        </div>
+
+        <!-- Bot: Comprehensive answers -->
+        <div class="message bot">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+                R&#225;d v&#225;m postupn&#283; odpov&#237;m na v&#353;echny va&#353;e ot&#225;zky. Za&#269;neme?
+
+                <div class="sub-heading">1. Co se stane, kdy&#382; si zapomenete d&#225;t inzul&#237;n?</div>
+                U diabetu 2. typu m&#367;&#382;e chyb&#283;j&#237;c&#237; d&#225;vka inzul&#237;nu v&#233;st ke zv&#253;&#353;en&#237; hladiny cukru v krvi (hyperglyk&#233;mii). Pokud se to stane jednou, sledujte glyk&#233;mii a kontaktujte l&#233;ka&#345;e, pokud se cukr v&#253;razn&#283; zv&#253;&#353;&#237; nebo m&#225;te p&#345;&#237;znaky jako &#250;nava, &#382;&#237;ze&#328;, &#269;ast&#233; mo&#269;en&#237;.
+
+                <div class="sub-heading">2. Vedlej&#353;&#237; &#250;&#269;inky inzul&#237;nu?</div>
+                Nej&#269;ast&#283;j&#353;&#237; je hypoglyk&#233;mie (n&#237;zk&#253; cukr), kter&#225; se projevuje t&#345;esem, pocen&#237;m, nervozitou. D&#225;le m&#367;&#382;e doj&#237;t k m&#237;stn&#237;m reakc&#237;m v m&#237;st&#283; vpichu (zarudn&#283;n&#237;, otok). O dal&#353;&#237;m &#345;e&#353;en&#237; v&#382;dy konzultujte s l&#233;ka&#345;em.
+
+                <div class="sub-heading">3. Jak inzul&#237;n skladovat?</div>
+                Neotev&#345;en&#253; inzul&#237;n uchov&#225;vejte v lednici (2&ndash;8 &#176;C), ale nesm&#237; zmrznout. Po otev&#345;en&#237; je vhodn&#233; ho uchov&#225;vat p&#345;i pokojov&#233; teplot&#283; (20&ndash;25 &#176;C) a pou&#382;&#237;vat do 28 dn&#367;. Chra&#328;te ho p&#345;ed p&#345;eh&#345;&#225;t&#237;m a p&#345;&#237;m&#253;m sluncem.
+
+                <div class="sub-heading">4. Co je CGM a jak funguje?</div>
+                CGM (kontinu&#225;ln&#237; monitorace gluk&#243;zy) je syst&#233;m, kter&#253; m&#283;&#345;&#237; hladinu cukru v podko&#382;&#237; nep&#345;etr&#382;it&#283; pomoc&#237; senzoru. Data se p&#345;en&#225;&#353;ej&#237; do mobilu nebo jin&#233;ho za&#345;&#237;zen&#237;, kde vid&#237;te aktu&#225;ln&#237; hodnoty i trendy.
+
+                <div class="sub-heading">5. Jak&#233; CGM syst&#233;my existuj&#237; v &#268;esku?</div>
+                Mezi dostupn&#233; pat&#345;&#237; FreeStyle Libre 2 a 3, Dexcom G6 a G7, Guardian 4, Simplera a dal&#353;&#237;. N&#283;kter&#233; jsou bezkalibra&#269;n&#237;, jin&#233; vy&#382;aduj&#237; kalibraci.
+
+                <div class="sub-heading">6. Jak &#269;&#237;st grafy z CGM?</div>
+                Graf ukazuje pr&#367;b&#283;h cukru v &#269;ase. Sledujte aktu&#225;ln&#237; hodnotu, trendovou &#353;ipku (sm&#283;r a rychlost zm&#283;ny) a &#269;as str&#225;ven&#253; v c&#237;lov&#233;m rozmez&#237; (TIR).
+
+                <div class="sub-heading">7. Co znamen&#225; &#353;ipka nahoru na senzoru?</div>
+                &#352;ipka nahoru znamen&#225;, &#382;e hladina cukru rychle stoup&#225;. M&#283;li byste to zohlednit p&#345;i d&#225;vkov&#225;n&#237; inzul&#237;nu, proto&#382;e skute&#269;n&#225; glyk&#233;mie m&#367;&#382;e b&#253;t u&#382; vy&#353;&#353;&#237;, ne&#382; ukazuje aktu&#225;ln&#237; hodnota.
+
+                <div class="sub-heading">8. Hrad&#237; CGM poji&#353;&#357;ovna?</div>
+                Od 1.1.2026 hrad&#237; CGM v&#353;em pacient&#367;m l&#233;&#269;en&#253;m 3 a v&#237;ce d&#225;vkami inzul&#237;nu denn&#283;, bez ohledu na typ diabetu, pokud spln&#237; podm&#237;nky. Existuj&#237; plnohodnotn&#225; a limitovan&#225; CGM s r&#367;zn&#253;mi &#250;hradami.
+
+                <div class="sub-heading">9. Jak&#233; cvi&#269;en&#237; je vhodn&#233; p&#345;i diabetu 2. typu?</div>
+                Doporu&#269;uje se aerobn&#237; aktivita st&#345;edn&#237; a&#382; vysok&#233; intenzity (nap&#345;. ch&#367;ze, j&#237;zda na kole) minim&#225;ln&#283; 150 minut t&#253;dn&#283;, odporov&#233; cvi&#269;en&#237; 2&ndash;3&times; t&#253;dn&#283; a cviky na flexibilitu a rovnov&#225;hu.
+
+                <div class="sub-heading">10. M&#367;&#382;u b&#283;hat marat&#243;n s diabetem?</div>
+                S diabetem 2. typu je mo&#382;n&#233; i n&#225;ro&#269;n&#283;j&#353;&#237; sporty, ale je t&#345;eba konzultovat s l&#233;ka&#345;em, m&#237;t dobrou kompenzaci a zn&#225;t spr&#225;vn&#233; strategie &#250;pravy inzul&#237;nu a p&#345;&#237;jmu sacharid&#367;.
+
+                <div class="sub-heading">11. Co d&#283;lat, kdy&#382; p&#345;i cvi&#269;en&#237; klesne cukr?</div>
+                Okam&#382;it&#283; p&#345;esta&#328;te cvi&#269;it a rychle p&#345;ijm&#283;te 15&ndash;20 g rychle vst&#345;ebateln&#253;ch sacharid&#367; (nap&#345;. hroznov&#253; cukr, d&#382;us). Po 15 minut&#225;ch zkontrolujte cukr a podle pot&#345;eby postup opakujte.
+
+                <div class="sub-heading">12. M&#225;m cvi&#269;it p&#345;ed j&#237;dlem nebo po j&#237;dle?</div>
+                Obvykle je lep&#353;&#237; cvi&#269;it 1&ndash;2 hodiny po j&#237;dle, kdy je dostatek energie a ni&#382;&#353;&#237; riziko hypoglyk&#233;mie. P&#345;i cvi&#269;en&#237; p&#345;ed j&#237;dlem je t&#345;eba po&#269;&#237;tat s dopln&#283;n&#237;m sacharid&#367; a &#250;pravou inzul&#237;nu.
+                <br><br>
+                Chcete, abych v&#225;m n&#283;kter&#233; odpov&#283;di rozvedl podrobn&#283;ji? Nebo m&#225;te dal&#353;&#237; ot&#225;zky?
+            </div>
+        </div>
+
+    </div>
+
+    <!-- KEY FEATURES -->
+    <h3 class="section-header">Demonstrovan&#233; funkce</h3>
+
+    <table class="summary-table">
+        <tr>
+            <th>Funkce</th>
+            <th>Popis</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>V&#253;b&#283;r t&#233;matu</td>
+            <td>U&#382;ivatel si zvol&#237; tematickou oblast z nab&#237;dky</td>
+            <td><span class="badge pass">Funk&#269;n&#237;</span></td>
+        </tr>
+        <tr>
+            <td>Kontextov&#233; ot&#225;zky</td>
+            <td>Bot se pt&#225; na typ diabetu pro personalizaci</td>
+            <td><span class="badge pass">Funk&#269;n&#237;</span></td>
+        </tr>
+        <tr>
+            <td>Podrobn&#233; odpov&#283;di</td>
+            <td>Strukturovan&#233; odpov&#283;di s odr&#225;&#382;kami a pokyny</td>
+            <td><span class="badge pass">Funk&#269;n&#237;</span></td>
+        </tr>
+        <tr>
+            <td>Multi-ot&#225;zky</td>
+            <td>Bot zvl&#225;d&#225; odpov&#283;d&#283;t na v&#237;ce ot&#225;zek najednou</td>
+            <td><span class="badge pass">Funk&#269;n&#237;</span></td>
+        </tr>
+        <tr>
+            <td>K&#345;&#237;&#382;ov&#225; t&#233;mata</td>
+            <td>Plynul&#253; p&#345;echod mezi inzul&#237;nem, CGM a cvi&#269;en&#237;m</td>
+            <td><span class="badge pass">Funk&#269;n&#237;</span></td>
+        </tr>
+        <tr>
+            <td>N&#225;vazn&#233; ot&#225;zky</td>
+            <td>Bot nab&#237;z&#237; dal&#353;&#237; prohlouben&#237; t&#233;matu</td>
+            <td><span class="badge pass">Funk&#269;n&#237;</span></td>
+        </tr>
+        <tr>
+            <td>Odkaz na l&#233;ka&#345;e</td>
+            <td>Bot odkazuje na konzultaci s l&#233;ka&#345;em u specifick&#253;ch dotaz&#367;</td>
+            <td><span class="badge pass">Funk&#269;n&#237;</span></td>
+        </tr>
+    </table>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Diabetologick&#253; poradce &mdash; Medical Bot &bull; Demo konverzace &bull; B&#345;ezen 2026<br>
+        Tento dokument byl vygenerov&#225;n pro &#250;&#269;ely prezentace funk&#269;nosti aplikace.
+    </div>
+
+</div>
+
+</body>
+</html>

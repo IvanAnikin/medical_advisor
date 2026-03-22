@@ -1,0 +1,14 @@
+@inject ThemeService ThemeService
+
+<MudToggleGroup T="AppTheme" Value="ThemeService.CurrentTheme" ValueChanged="OnThemeChanged"
+    Color="Color.Inherit" Style="color: white;">
+    <MudToggleItem Value="AppTheme.Clinical" Text="Klinický" />
+    <MudToggleItem Value="AppTheme.Friendly" Text="Přátelský" />
+</MudToggleGroup>
+
+@code {
+    private void OnThemeChanged(AppTheme theme)
+    {
+        ThemeService.SetTheme(theme);
+    }
+}

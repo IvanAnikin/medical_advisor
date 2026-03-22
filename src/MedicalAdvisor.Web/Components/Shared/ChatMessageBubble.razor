@@ -1,0 +1,57 @@
+@using System.Text.RegularExpressions
+
+<div class="d-flex @(IsUser ? "justify-end" : "justify-start") mb-3">
+    <MudPaper Class="@BubbleClass" Style="@BubbleStyle" Elevation="1">
+        <MudText Typo="Typo.body1" Style="@TextStyle">
+            @((MarkupString)RenderContent(Message.Content))@if (Message.IsStreaming)
+            {
+                <span class="streaming-cursor">|</span>
+            }
+        </MudText>
+        <MudText Typo="Typo.caption" Class="@TimestampClass">
+            @Message.Timestamp.ToString("HH:mm")
+        </MudText>
+    </MudPaper>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public ChatMessage Message { get; set; } = default!;
+
+    private bool IsUser => Message.Role == ChatRole.User;
+
+    private string BubbleClass => IsUser
+        ? "message-bubble user-bubble pa-3"
+        : "message-bubble assistant-bubble pa-3";
+
+    private string BubbleStyle => IsUser
+        ? "background-color: var(--mud-palette-primary); color: white;"
+        : "background-color: var(--mud-palette-surface);";
+
+    private string TextStyle => IsUser
+        ? "color: white;"
+        : "";
+
+    private string TimestampClass => IsUser
+        ? "mt-1 mud-text-secondary"
+        : "mt-1 mud-text-secondary";
+
+    private static string RenderContent(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return string.Empty;
+
+        var escaped = System.Net.WebUtility.HtmlEncode(content);
+
+        // Bold: **text**
+        escaped = Regex.Replace(escaped, @"\*\*(.+?)\*\*", "<strong>$1</strong>");
+
+        // Italic: *text*
+        escaped = Regex.Replace(escaped, @"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", "<em>$1</em>");
+
+        // Newlines
+        escaped = escaped.Replace("\n", "<br />");
+
+        return escaped;
+    }
+}

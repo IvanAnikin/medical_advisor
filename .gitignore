@@ -1,0 +1,40 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.vs/
+.vs/
+*.DotSettings.user
+
+## User secrets
+secrets.json
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.nupkg
+
+## IDE
+.idea/
+*.swp
+*~
+.vscode/
+
+## macOS
+.DS_Store
+Thumbs.db
+
+## Environment / secrets
+.env
+*.pfx
+*.key
+appsettings.*.local.json
