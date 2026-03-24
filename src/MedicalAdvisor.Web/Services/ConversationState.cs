@@ -5,13 +5,8 @@ namespace MedicalAdvisor.Web.Services;
 
 public class ConversationState
 {
-    private const string WelcomeMessage =
-        "Dobrý den! Jsem váš diabetologický poradce. Mohu vám pomoci s informacemi o:\n\n" +
-        "• **Léčbě inzulínem** — zahájení, typy inzulínu, dávkování, aplikace\n" +
-        "• **Kontinuální monitoraci glukózy (CGM)** — princip, systémy, interpretace\n" +
-        "• **Péči o nohy při diabetu** — prevence, rizika, postupy\n" +
-        "• **Fyzické aktivitě s diabetem** — doporučení, typy, rizika\n\n" +
-        "S čím vám mohu pomoci?";
+    internal const string WelcomeMessage =
+        "Dobrý den! Jsem váš diabetologický poradce.";
 
     public List<ChatMessage> Messages { get; private set; } = [];
     public ChatHistory ChatHistory { get; private set; } = new();

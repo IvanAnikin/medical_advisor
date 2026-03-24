@@ -30,6 +30,16 @@ public class ConversationStateTests
     }
 
     [Fact]
+    public void InitialState_WelcomeMessageIsShorterGreeting()
+    {
+        var state = new ConversationState();
+
+        Assert.Equal(ConversationState.WelcomeMessage, state.Messages[0].Content);
+        Assert.Contains("Dobrý den", state.Messages[0].Content);
+        Assert.Contains("poradce", state.Messages[0].Content);
+    }
+
+    [Fact]
     public void InitialState_ChatHistoryIsEmpty()
     {
         // Welcome message is NOT added to ChatHistory per the implementation

@@ -8,4 +8,6 @@ public class ChatMessage
     public string Content { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; } = DateTime.Now;
     public bool IsStreaming { get; set; }
+    public List<string> QuickReplies { get; set; } = [];
+    public bool ShowQuickReplies { get; set; } = true;
 }

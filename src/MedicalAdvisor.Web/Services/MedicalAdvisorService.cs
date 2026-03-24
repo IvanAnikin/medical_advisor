@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
+using MedicalAdvisor.Web.Models;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
@@ -33,6 +35,7 @@ public class MedicalAdvisorService
     public async IAsyncEnumerable<string> StreamResponseAsync(
         string userMessage,
         ConversationState state,
+        ChatMessage streamingMessage,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
         // Add user message to ChatHistory only (UI manages Messages separately).
@@ -66,11 +69,33 @@ public class MedicalAdvisorService
             }
         }
 
-        // Add the full assistant response to ChatHistory (UI manages Messages separately).
-        state.ChatHistory.AddAssistantMessage(fullResponse.ToString());
+        // Parse quick replies from the full response.
+        var (cleanContent, quickReplies) = ParseQuickReplies(fullResponse.ToString());
+
+        // Store clean content (without quick-reply block) in ChatHistory.
+        state.ChatHistory.AddAssistantMessage(cleanContent);
+
+        // Set quick replies on the streaming message so the UI can render them.
+        streamingMessage.Content = cleanContent;
+        streamingMessage.QuickReplies = quickReplies;
 
         _logger.LogDebug(
-            "Completed streaming response — {Length} characters",
-            fullResponse.Length);
+            "Completed streaming response — {Length} characters, {QuickReplyCount} quick replies",
+            cleanContent.Length, quickReplies.Count);
+    }
+
+    internal static (string Content, List<string> QuickReplies) ParseQuickReplies(string response)
+    {
+        var match = Regex.Match(response, @"\[QUICK_REPLIES\]\s*(.*?)\s*\[/QUICK_REPLIES\]", RegexOptions.Singleline);
+        if (!match.Success)
+            return (response, []);
+
+        var content = response[..match.Index].TrimEnd();
+        var replies = match.Groups[1].Value
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Take(4)
+            .ToList();
+
+        return (content, replies);
     }
 }

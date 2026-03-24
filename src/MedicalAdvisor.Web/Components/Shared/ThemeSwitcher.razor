@@ -1,14 +1,45 @@
 @inject ThemeService ThemeService
+@implements IDisposable
 
-<MudToggleGroup T="AppTheme" Value="ThemeService.CurrentTheme" ValueChanged="OnThemeChanged"
-    Color="Color.Inherit" Style="color: white;">
-    <MudToggleItem Value="AppTheme.Clinical" Text="Klinický" />
-    <MudToggleItem Value="AppTheme.Friendly" Text="Přátelský" />
-</MudToggleGroup>
+<div class="theme-switcher">
+    <button class="theme-pill @(ThemeService.CurrentTheme == AppTheme.Clinical ? "active" : "")"
+            @onclick="() => SetTheme(AppTheme.Clinical)"
+            aria-label="Klinický styl">
+        <MudIcon Icon="@Icons.Material.Filled.Palette" />
+        <span>Klinický</span>
+    </button>
+    <button class="theme-pill @(ThemeService.CurrentTheme == AppTheme.Friendly ? "active" : "")"
+            @onclick="() => SetTheme(AppTheme.Friendly)"
+            aria-label="Přátelský styl">
+        <MudIcon Icon="@Icons.Material.Filled.EmojiNature" />
+        <span>Přátelský</span>
+    </button>
+    <button class="theme-pill @(ThemeService.CurrentTheme == AppTheme.Dark ? "active" : "")"
+            @onclick="() => SetTheme(AppTheme.Dark)"
+            aria-label="Tmavý režim">
+        <MudIcon Icon="@Icons.Material.Filled.DarkMode" />
+        <span>Tmavý</span>
+    </button>
+</div>
 
 @code {
-    private void OnThemeChanged(AppTheme theme)
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += OnThemeChanged;
+    }
+
+    private void SetTheme(AppTheme theme)
     {
         ThemeService.SetTheme(theme);
+    }
+
+    private void OnThemeChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= OnThemeChanged;
     }
 }

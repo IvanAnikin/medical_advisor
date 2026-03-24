@@ -1,0 +1,31 @@
+<div class="quick-replies" role="group" aria-label="Navrhované otázky">
+    @for (var i = 0; i < Replies.Count; i++)
+    {
+        var reply = Replies[i];
+        <button class="quick-reply-btn"
+                disabled="@Disabled"
+                @onclick="() => OnReplyClicked(reply)"
+                aria-label="@reply">
+            @reply
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<string> Replies { get; set; } = [];
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnReplySelected { get; set; }
+
+    private async Task OnReplyClicked(string reply)
+    {
+        if (!Disabled)
+        {
+            await OnReplySelected.InvokeAsync(reply);
+        }
+    }
+}

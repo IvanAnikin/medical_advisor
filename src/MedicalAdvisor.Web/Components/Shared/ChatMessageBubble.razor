@@ -1,17 +1,31 @@
 @using System.Text.RegularExpressions
 
-<div class="d-flex @(IsUser ? "justify-end" : "justify-start") mb-3">
-    <MudPaper Class="@BubbleClass" Style="@BubbleStyle" Elevation="1">
-        <MudText Typo="Typo.body1" Style="@TextStyle">
-            @((MarkupString)RenderContent(Message.Content))@if (Message.IsStreaming)
-            {
-                <span class="streaming-cursor">|</span>
-            }
-        </MudText>
-        <MudText Typo="Typo.caption" Class="@TimestampClass">
+<div class="message-row @(IsUser ? "user-row" : "assistant-row")">
+    <div class="message-avatar">
+        @if (IsUser)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Person" />
+        }
+        else
+        {
+            <MudIcon Icon="@Icons.Material.Filled.LocalHospital" />
+        }
+    </div>
+    <div class="@BubbleClass">
+        @if (Message.IsStreaming && string.IsNullOrEmpty(Message.Content))
+        {
+            <TypingIndicator />
+        }
+        else
+        {
+            <span class="message-text">
+                @((MarkupString)RenderContent(Message.Content))
+            </span>
+        }
+        <div class="message-timestamp">
             @Message.Timestamp.ToString("HH:mm")
-        </MudText>
-    </MudPaper>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -21,20 +35,8 @@
     private bool IsUser => Message.Role == ChatRole.User;
 
     private string BubbleClass => IsUser
-        ? "message-bubble user-bubble pa-3"
-        : "message-bubble assistant-bubble pa-3";
-
-    private string BubbleStyle => IsUser
-        ? "background-color: var(--mud-palette-primary); color: white;"
-        : "background-color: var(--mud-palette-surface);";
-
-    private string TextStyle => IsUser
-        ? "color: white;"
-        : "";
-
-    private string TimestampClass => IsUser
-        ? "mt-1 mud-text-secondary"
-        : "mt-1 mud-text-secondary";
+        ? "message-bubble user-bubble"
+        : "message-bubble assistant-bubble";
 
     private static string RenderContent(string content)
     {

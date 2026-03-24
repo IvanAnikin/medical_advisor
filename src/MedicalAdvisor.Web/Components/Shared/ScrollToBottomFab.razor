@@ -1,0 +1,17 @@
+@if (Visible)
+{
+    <div class="scroll-fab">
+        <MudFab StartIcon="@Icons.Material.Filled.KeyboardArrowDown"
+                Size="Size.Small"
+                OnClick="OnClick"
+                aria-label="Posunout na konec" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

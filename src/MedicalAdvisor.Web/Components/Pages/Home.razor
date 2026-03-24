@@ -2,39 +2,62 @@
 @rendermode InteractiveServer
 @inject MedicalAdvisorService AdvisorService
 @inject ConversationState ConversationState
+@inject ThemeService ThemeService
 @inject IJSRuntime JS
+@implements IDisposable
 
 <PageTitle>Diabetologický poradce</PageTitle>
 
-<div class="chat-container">
-    <div class="chat-messages" id="chat-messages">
+<div class="chat-container @ThemeService.ThemeCssClass">
+    <div class="chat-messages" id="chat-messages" @onscroll="OnScroll">
         <MudContainer MaxWidth="MaxWidth.Medium">
             @foreach (var message in ConversationState.Messages)
             {
                 <ChatMessageBubble Message="message" />
+
+                @* Welcome cards -- shown after the first (welcome) message *@
+                @if (message == ConversationState.Messages[0] && _showWelcomeCards)
+                {
+                    <WelcomeCards OnTopicSelected="OnTopicSelected" />
+                }
+
+                @* Quick-reply buttons -- shown below assistant messages that have them *@
+                @if (message.Role == ChatRole.Assistant
+                     && message.QuickReplies.Count > 0
+                     && message.ShowQuickReplies
+                     && !_isStreaming)
+                {
+                    <QuickReplyButtons Replies="message.QuickReplies"
+                                       Disabled="_isStreaming"
+                                       OnReplySelected="OnQuickReplySelected" />
+                }
             }
         </MudContainer>
     </div>
 
+    <ScrollToBottomFab Visible="_showScrollFab" OnClick="ScrollToBottom" />
+
     <div class="chat-input-area">
         <MudContainer MaxWidth="MaxWidth.Medium">
-            <div class="d-flex align-end gap-2">
+            <div class="input-pill">
+                <MudIcon Icon="@Icons.Material.Filled.ChatBubbleOutline" Class="input-pill-icon" />
                 <MudTextField @ref="_inputField"
                               @bind-Value="_userInput"
                               Placeholder="Napište svou zprávu..."
-                              Variant="Variant.Outlined"
+                              Variant="Variant.Text"
                               Sizing="InputSizing.Auto"
                               MaxLines="5"
                               Disabled="_isStreaming"
                               Immediate="false"
                               OnKeyDown="OnKeyDown"
-                              Class="flex-grow-1" />
+                              Class="flex-grow-1"
+                              Style="font-size: 15px;" />
                 <MudIconButton Icon="@Icons.Material.Filled.Send"
                                Color="Color.Primary"
                                Variant="Variant.Filled"
                                OnClick="SendMessage"
                                Disabled="@(_isStreaming || string.IsNullOrWhiteSpace(_userInput))"
-                               Class="mb-1" />
+                               Class="send-button" />
             </div>
         </MudContainer>
     </div>
@@ -43,12 +66,34 @@
 @code {
     private string _userInput = string.Empty;
     private bool _isStreaming;
+    private bool _showWelcomeCards = true;
+    private bool _showScrollFab;
+    private bool _shouldScrollToBottom;
     private MudTextField<string>? _inputField;
     private CancellationTokenSource? _cts;
 
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += OnThemeChanged;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await ScrollToBottom();
+        if (firstRender)
+        {
+            // Scroll to bottom on initial load only.
+            await ScrollToBottom();
+        }
+        else if (_shouldScrollToBottom)
+        {
+            _shouldScrollToBottom = false;
+            await ScrollToBottom();
+        }
+    }
+
+    private void OnThemeChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task OnKeyDown(KeyboardEventArgs e)
@@ -59,6 +104,22 @@
         }
     }
 
+    private async Task OnTopicSelected(string topic)
+    {
+        _showWelcomeCards = false;
+        await SendMessageText(topic);
+    }
+
+    private async Task OnQuickReplySelected(string reply)
+    {
+        // Hide quick replies on all messages when one is selected.
+        foreach (var msg in ConversationState.Messages)
+        {
+            msg.ShowQuickReplies = false;
+        }
+        await SendMessageText(reply);
+    }
+
     private async Task SendMessage()
     {
         var input = _userInput?.Trim();
@@ -66,6 +127,21 @@
             return;
 
         _userInput = string.Empty;
+        _showWelcomeCards = false;
+
+        // Hide quick replies on all messages when user types manually.
+        foreach (var msg in ConversationState.Messages)
+        {
+            msg.ShowQuickReplies = false;
+        }
+
+        await SendMessageText(input);
+    }
+
+    private async Task SendMessageText(string input)
+    {
+        if (_isStreaming) return;
+
         _isStreaming = true;
 
         // Add user message to UI display list only (service manages ChatHistory).
@@ -75,8 +151,8 @@
             Content = input,
             Timestamp = DateTime.Now,
         });
+        RequestScrollToBottom();
         StateHasChanged();
-        await ScrollToBottom();
 
         // Create placeholder streaming message for UI.
         var streamingMessage = new ChatMessage
@@ -87,18 +163,18 @@
             IsStreaming = true
         };
         ConversationState.Messages.Add(streamingMessage);
+        RequestScrollToBottom();
         StateHasChanged();
-        await ScrollToBottom();
 
         _cts = new CancellationTokenSource();
 
         try
         {
-            await foreach (var chunk in AdvisorService.StreamResponseAsync(input, ConversationState, _cts.Token))
+            await foreach (var chunk in AdvisorService.StreamResponseAsync(input, ConversationState, streamingMessage, _cts.Token))
             {
                 streamingMessage.Content += chunk;
+                RequestScrollToBottom();
                 StateHasChanged();
-                await ScrollToBottom();
             }
         }
         catch (OperationCanceledException)
@@ -115,8 +191,14 @@
             _isStreaming = false;
             _cts?.Dispose();
             _cts = null;
+            RequestScrollToBottom();
             StateHasChanged();
         }
+    }
+
+    private void RequestScrollToBottom()
+    {
+        _shouldScrollToBottom = true;
     }
 
     private async Task ScrollToBottom()
@@ -132,8 +214,28 @@
         }
     }
 
+    private async Task OnScroll()
+    {
+        try
+        {
+            var isAtBottom = await JS.InvokeAsync<bool>("eval",
+                "(function() { var el = document.getElementById('chat-messages'); if (!el) return true; return el.scrollHeight - el.scrollTop - el.clientHeight < 100; })()");
+            var newValue = !isAtBottom;
+            if (_showScrollFab != newValue)
+            {
+                _showScrollFab = newValue;
+                StateHasChanged();
+            }
+        }
+        catch
+        {
+            // Ignore JS interop errors during prerendering
+        }
+    }
+
     public void Dispose()
     {
+        ThemeService.OnThemeChanged -= OnThemeChanged;
         _cts?.Cancel();
         _cts?.Dispose();
     }

@@ -8,7 +8,7 @@ obj/
 .vs/
 *.DotSettings.user
 
-## User secrets
+## User secrets (local .NET secret store)
 secrets.json
 
 ## Build results
@@ -23,20 +23,66 @@ bld/
 [Ll]ogs/
 *.nupkg
 
+## Publish / deploy artifacts
+publish/
+deploy.zip
+*.publish.xml
+
 ## IDE
 .idea/
 *.swp
 *~
 .vscode/
+*.code-workspace
 
 ## macOS
 .DS_Store
 Thumbs.db
+._*
 
-## Environment / secrets
+## Environment / secrets / credentials
 .env
+.env.*
 *.pfx
 *.key
+*.pem
+*.cert
+*.p12
+*.jks
+*.keystore
+*.snk
 appsettings.*.local.json
-deploy.zip
-publish/
+appsettings.Local.json
+appsettings.Secrets.json
+appsettings.Production.json
+**/Properties/ServiceDependencies/
+
+## Azure credentials & tokens
+azure.json
+.azure/
+azureauth.json
+servicePrincipal.json
+*.azureauth
+TokenCache.dat
+
+## User secrets directory (should never be committed)
+.microsoft/
+
+## Python venv (used for Azure CLI)
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+## Terraform / IaC state (if added later)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+## Misc sensitive files
+credentials.json
+service-account*.json
+*.secret
+*.secrets
+token.json
+oauth2.json

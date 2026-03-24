@@ -62,26 +62,25 @@ public class ThemeServiceTests
     }
 
     [Fact]
-    public void ClinicalTheme_HasBluePrimaryColor()
+    public void ClinicalTheme_HasSoftBluePrimaryColor()
     {
         var service = new ThemeService();
 
-        // Default is Clinical
         var theme = service.CurrentMudTheme;
 
-        // MudColor.Value returns lowercase with alpha suffix (e.g. "#1565c0ff")
-        Assert.StartsWith("#1565c0", theme.PaletteLight.Primary.Value);
+        // MudColor.Value returns lowercase with alpha suffix (e.g. "#5b7fd6ff")
+        Assert.StartsWith("#5b7fd6", theme.PaletteLight.Primary.Value);
     }
 
     [Fact]
-    public void FriendlyTheme_HasTealPrimaryColor()
+    public void FriendlyTheme_HasSoftSagePrimaryColor()
     {
         var service = new ThemeService();
         service.SetTheme(AppTheme.Friendly);
 
         var theme = service.CurrentMudTheme;
 
-        Assert.StartsWith("#00897b", theme.PaletteLight.Primary.Value);
+        Assert.StartsWith("#5ba88a", theme.PaletteLight.Primary.Value);
     }
 
     [Fact]
@@ -91,7 +90,7 @@ public class ThemeServiceTests
 
         var theme = service.CurrentMudTheme;
 
-        Assert.StartsWith("#42a5f5", theme.PaletteLight.Secondary.Value);
+        Assert.StartsWith("#8da4e2", theme.PaletteLight.Secondary.Value);
     }
 
     [Fact]
@@ -102,7 +101,28 @@ public class ThemeServiceTests
 
         var theme = service.CurrentMudTheme;
 
-        Assert.StartsWith("#4db6ac", theme.PaletteLight.Secondary.Value);
+        Assert.StartsWith("#82c4a8", theme.PaletteLight.Secondary.Value);
+    }
+
+    [Fact]
+    public void ClinicalTheme_AppBarBackground_IsWhite()
+    {
+        var service = new ThemeService();
+
+        var theme = service.CurrentMudTheme;
+
+        Assert.StartsWith("#ffffff", theme.PaletteLight.AppbarBackground.Value);
+    }
+
+    [Fact]
+    public void FriendlyTheme_AppBarBackground_IsWhite()
+    {
+        var service = new ThemeService();
+        service.SetTheme(AppTheme.Friendly);
+
+        var theme = service.CurrentMudTheme;
+
+        Assert.StartsWith("#ffffff", theme.PaletteLight.AppbarBackground.Value);
     }
 
     [Fact]
@@ -116,7 +136,7 @@ public class ThemeServiceTests
         service.SetTheme(AppTheme.Clinical);
         Assert.Equal(AppTheme.Clinical, service.CurrentTheme);
 
-        Assert.StartsWith("#1565c0", service.CurrentMudTheme.PaletteLight.Primary.Value);
+        Assert.StartsWith("#5b7fd6", service.CurrentMudTheme.PaletteLight.Primary.Value);
     }
 
     [Fact]
@@ -131,5 +151,22 @@ public class ThemeServiceTests
         service.SetTheme(AppTheme.Clinical);  // fires
 
         Assert.Equal(2, fireCount);
+    }
+
+    [Fact]
+    public void ThemeCssClass_ReturnsClinical_ByDefault()
+    {
+        var service = new ThemeService();
+
+        Assert.Equal("theme-clinical", service.ThemeCssClass);
+    }
+
+    [Fact]
+    public void ThemeCssClass_ReturnsFriendly_WhenFriendlyTheme()
+    {
+        var service = new ThemeService();
+        service.SetTheme(AppTheme.Friendly);
+
+        Assert.Equal("theme-friendly", service.ThemeCssClass);
     }
 }

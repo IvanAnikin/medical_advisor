@@ -1,0 +1,39 @@
+<div class="welcome-cards" role="group" aria-label="Témata k výběru">
+    @foreach (var card in _cards)
+    {
+        <div class="welcome-card" @onclick="() => OnCardClicked(card.Topic)" role="button" tabindex="0"
+             @onkeydown="(e) => OnCardKeyDown(e, card.Topic)" aria-label="@card.Topic">
+            <MudIcon Icon="@card.Icon" Class="welcome-card-icon" />
+            <span class="welcome-card-title">@card.Title</span>
+            <span class="welcome-card-subtitle">@card.Subtitle</span>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnTopicSelected { get; set; }
+
+    private record CardInfo(string Icon, string Title, string Subtitle, string Topic);
+
+    private static readonly CardInfo[] _cards =
+    [
+        new(Icons.Material.Filled.Vaccines, "Léčba inzulínem", "Zahájení, typy, dávkování", "Léčba inzulínem"),
+        new(Icons.Material.Filled.MonitorHeart, "Monitorace glukózy", "Systémy, interpretace", "Monitorace glukózy (CGM)"),
+        new(Icons.Material.Filled.Accessibility, "Péče o nohy", "Prevence, rizika", "Péče o nohy"),
+        new(Icons.Material.Filled.FitnessCenter, "Fyzická aktivita", "Doporučení, typy", "Fyzická aktivita"),
+    ];
+
+    private async Task OnCardClicked(string topic)
+    {
+        await OnTopicSelected.InvokeAsync(topic);
+    }
+
+    private async Task OnCardKeyDown(KeyboardEventArgs e, string topic)
+    {
+        if (e.Key == "Enter" || e.Key == " ")
+        {
+            await OnTopicSelected.InvokeAsync(topic);
+        }
+    }
+}
