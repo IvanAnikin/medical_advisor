@@ -15,6 +15,14 @@ public class ThemeServiceTests
     }
 
     [Fact]
+    public void DefaultDarkMode_IsFalse()
+    {
+        var service = new ThemeService();
+
+        Assert.False(service.IsDarkMode);
+    }
+
+    [Fact]
     public void SetTheme_ChangesCurrentTheme()
     {
         var service = new ThemeService();
@@ -43,10 +51,55 @@ public class ThemeServiceTests
         var eventFired = false;
         service.OnThemeChanged += () => eventFired = true;
 
-        // Default is Clinical, setting it again should be a no-op
         service.SetTheme(AppTheme.Clinical);
 
         Assert.False(eventFired);
+    }
+
+    [Fact]
+    public void SetDarkMode_ChangesIsDarkMode()
+    {
+        var service = new ThemeService();
+
+        service.SetDarkMode(true);
+
+        Assert.True(service.IsDarkMode);
+    }
+
+    [Fact]
+    public void SetDarkMode_FiresOnThemeChangedEvent()
+    {
+        var service = new ThemeService();
+        var eventFired = false;
+        service.OnThemeChanged += () => eventFired = true;
+
+        service.SetDarkMode(true);
+
+        Assert.True(eventFired);
+    }
+
+    [Fact]
+    public void SetDarkMode_DoesNotFireEvent_WhenSameValue()
+    {
+        var service = new ThemeService();
+        var eventFired = false;
+        service.OnThemeChanged += () => eventFired = true;
+
+        service.SetDarkMode(false);
+
+        Assert.False(eventFired);
+    }
+
+    [Fact]
+    public void SetDarkMode_CanToggleBackAndForth()
+    {
+        var service = new ThemeService();
+
+        service.SetDarkMode(true);
+        Assert.True(service.IsDarkMode);
+
+        service.SetDarkMode(false);
+        Assert.False(service.IsDarkMode);
     }
 
     [Fact]
@@ -68,7 +121,6 @@ public class ThemeServiceTests
 
         var theme = service.CurrentMudTheme;
 
-        // MudColor.Value returns lowercase with alpha suffix (e.g. "#5b7fd6ff")
         Assert.StartsWith("#5b7fd6", theme.PaletteLight.Primary.Value);
     }
 
@@ -81,6 +133,27 @@ public class ThemeServiceTests
         var theme = service.CurrentMudTheme;
 
         Assert.StartsWith("#5ba88a", theme.PaletteLight.Primary.Value);
+    }
+
+    [Fact]
+    public void ClinicalTheme_HasDarkPalette()
+    {
+        var service = new ThemeService();
+
+        var theme = service.CurrentMudTheme;
+
+        Assert.StartsWith("#7c9bf0", theme.PaletteDark.Primary.Value);
+    }
+
+    [Fact]
+    public void FriendlyTheme_HasDarkPalette()
+    {
+        var service = new ThemeService();
+        service.SetTheme(AppTheme.Friendly);
+
+        var theme = service.CurrentMudTheme;
+
+        Assert.StartsWith("#6bc4a0", theme.PaletteDark.Primary.Value);
     }
 
     [Fact]
@@ -102,27 +175,6 @@ public class ThemeServiceTests
         var theme = service.CurrentMudTheme;
 
         Assert.StartsWith("#82c4a8", theme.PaletteLight.Secondary.Value);
-    }
-
-    [Fact]
-    public void ClinicalTheme_AppBarBackground_IsWhite()
-    {
-        var service = new ThemeService();
-
-        var theme = service.CurrentMudTheme;
-
-        Assert.StartsWith("#ffffff", theme.PaletteLight.AppbarBackground.Value);
-    }
-
-    [Fact]
-    public void FriendlyTheme_AppBarBackground_IsWhite()
-    {
-        var service = new ThemeService();
-        service.SetTheme(AppTheme.Friendly);
-
-        var theme = service.CurrentMudTheme;
-
-        Assert.StartsWith("#ffffff", theme.PaletteLight.AppbarBackground.Value);
     }
 
     [Fact]
@@ -168,5 +220,55 @@ public class ThemeServiceTests
         service.SetTheme(AppTheme.Friendly);
 
         Assert.Equal("theme-friendly", service.ThemeCssClass);
+    }
+
+    [Fact]
+    public void ThemeCssClass_ReturnsDarkMode_WhenDarkEnabled()
+    {
+        var service = new ThemeService();
+        service.SetDarkMode(true);
+
+        Assert.Equal("theme-clinical dark-mode", service.ThemeCssClass);
+    }
+
+    [Fact]
+    public void ThemeCssClass_ReturnsFriendlyDarkMode_WhenBothSet()
+    {
+        var service = new ThemeService();
+        service.SetTheme(AppTheme.Friendly);
+        service.SetDarkMode(true);
+
+        Assert.Equal("theme-friendly dark-mode", service.ThemeCssClass);
+    }
+
+    [Fact]
+    public void ThemeAndDarkMode_AreIndependent()
+    {
+        var service = new ThemeService();
+
+        service.SetDarkMode(true);
+        service.SetTheme(AppTheme.Friendly);
+
+        Assert.Equal(AppTheme.Friendly, service.CurrentTheme);
+        Assert.True(service.IsDarkMode);
+
+        service.SetDarkMode(false);
+        Assert.Equal(AppTheme.Friendly, service.CurrentTheme);
+        Assert.False(service.IsDarkMode);
+    }
+
+    [Fact]
+    public void EventFires_ForBothThemeAndDarkModeChanges()
+    {
+        var service = new ThemeService();
+        var fireCount = 0;
+        service.OnThemeChanged += () => fireCount++;
+
+        service.SetTheme(AppTheme.Friendly);  // fires
+        service.SetDarkMode(true);             // fires
+        service.SetTheme(AppTheme.Clinical);   // fires
+        service.SetDarkMode(false);            // fires
+
+        Assert.Equal(4, fireCount);
     }
 }

@@ -2,21 +2,23 @@
 @implements IDisposable
 @inject ThemeService ThemeService
 
-<MudThemeProvider Theme="ThemeService.CurrentMudTheme" />
+<MudThemeProvider Theme="ThemeService.CurrentMudTheme" IsDarkMode="ThemeService.IsDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="0" Class="app-bar-custom">
-        <span class="app-bar-title ml-3">Diabetologický poradce</span>
-        <MudSpacer />
-        <ThemeSwitcher />
-    </MudAppBar>
-    <MudMainContent Class="pa-0" Style="height: calc(100vh - var(--mud-appbar-height)); overflow: hidden;">
-        @Body
-    </MudMainContent>
-</MudLayout>
+<div class="theme-root @ThemeService.ThemeCssClass">
+    <MudLayout>
+        <MudAppBar Elevation="0" Class="app-bar-custom">
+            <span class="app-bar-title ml-3">Diabetologický poradce</span>
+            <MudSpacer />
+            <ThemeSwitcher />
+        </MudAppBar>
+        <MudMainContent Class="pa-0" Style="height: calc(100vh - var(--mud-appbar-height)); overflow: hidden;">
+            @Body
+        </MudMainContent>
+    </MudLayout>
+</div>
 
 @code {
     protected override void OnInitialized()

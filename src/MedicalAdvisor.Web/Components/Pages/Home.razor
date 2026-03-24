@@ -1,5 +1,4 @@
 @page "/"
-@rendermode InteractiveServer
 @inject MedicalAdvisorService AdvisorService
 @inject ConversationState ConversationState
 @inject ThemeService ThemeService
@@ -8,7 +7,7 @@
 
 <PageTitle>Diabetologický poradce</PageTitle>
 
-<div class="chat-container @ThemeService.ThemeCssClass">
+<div class="chat-container">
     <div class="chat-messages" id="chat-messages" @onscroll="OnScroll">
         <MudContainer MaxWidth="MaxWidth.Medium">
             @foreach (var message in ConversationState.Messages)

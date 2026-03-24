@@ -1,3 +1,3 @@
 namespace MedicalAdvisor.Web.Models;
 
-public enum AppTheme { Clinical, Friendly, Dark }
+public enum AppTheme { Clinical, Friendly }

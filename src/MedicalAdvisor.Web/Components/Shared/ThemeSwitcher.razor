@@ -1,36 +1,93 @@
 @inject ThemeService ThemeService
+@inject IJSRuntime JS
 @implements IDisposable
 
 <div class="theme-switcher">
-    <button class="theme-pill @(ThemeService.CurrentTheme == AppTheme.Clinical ? "active" : "")"
-            @onclick="() => SetTheme(AppTheme.Clinical)"
-            aria-label="Klinický styl">
-        <MudIcon Icon="@Icons.Material.Filled.Palette" />
-        <span>Klinický</span>
-    </button>
-    <button class="theme-pill @(ThemeService.CurrentTheme == AppTheme.Friendly ? "active" : "")"
-            @onclick="() => SetTheme(AppTheme.Friendly)"
-            aria-label="Přátelský styl">
-        <MudIcon Icon="@Icons.Material.Filled.EmojiNature" />
-        <span>Přátelský</span>
-    </button>
-    <button class="theme-pill @(ThemeService.CurrentTheme == AppTheme.Dark ? "active" : "")"
-            @onclick="() => SetTheme(AppTheme.Dark)"
-            aria-label="Tmavý režim">
-        <MudIcon Icon="@Icons.Material.Filled.DarkMode" />
-        <span>Tmavý</span>
-    </button>
+    <span class="theme-sw-label">Klinický</span>
+    <MudSwitch T="bool"
+               Value="@(ThemeService.CurrentTheme == AppTheme.Friendly)"
+               ValueChanged="OnStyleToggled"
+               Color="Color.Primary"
+               Size="Size.Small"
+               Class="theme-sw-toggle" />
+    <span class="theme-sw-label">Přátelský</span>
+
+    <span class="theme-sw-divider"></span>
+
+    <span class="theme-sw-label">Světlý</span>
+    <MudSwitch T="bool"
+               Value="@ThemeService.IsDarkMode"
+               ValueChanged="OnDarkModeToggled"
+               Color="Color.Primary"
+               Size="Size.Small"
+               Class="theme-sw-toggle" />
+    <span class="theme-sw-label">Tmavý</span>
 </div>
 
 @code {
+    private bool _initialized;
+
     protected override void OnInitialized()
     {
         ThemeService.OnThemeChanged += OnThemeChanged;
     }
 
-    private void SetTheme(AppTheme theme)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        ThemeService.SetTheme(theme);
+        if (firstRender)
+        {
+            await LoadPreferencesFromCookies();
+            _initialized = true;
+        }
+    }
+
+    private async Task OnStyleToggled(bool isFriendly)
+    {
+        ThemeService.SetTheme(isFriendly ? AppTheme.Friendly : AppTheme.Clinical);
+        if (_initialized) await SavePreferencesToCookies();
+    }
+
+    private async Task OnDarkModeToggled(bool isDark)
+    {
+        ThemeService.SetDarkMode(isDark);
+        if (_initialized) await SavePreferencesToCookies();
+    }
+
+    private async Task LoadPreferencesFromCookies()
+    {
+        try
+        {
+            var themeCookie = await JS.InvokeAsync<string>("eval",
+                "document.cookie.split('; ').find(c => c.startsWith('theme='))?.split('=')[1] || ''");
+            var darkCookie = await JS.InvokeAsync<string>("eval",
+                "document.cookie.split('; ').find(c => c.startsWith('darkMode='))?.split('=')[1] || ''");
+
+            if (!string.IsNullOrEmpty(themeCookie) && Enum.TryParse<AppTheme>(themeCookie, out var theme))
+                ThemeService.SetTheme(theme);
+
+            if (!string.IsNullOrEmpty(darkCookie) && bool.TryParse(darkCookie, out var isDark))
+                ThemeService.SetDarkMode(isDark);
+        }
+        catch
+        {
+            // JS interop not available during prerender
+        }
+    }
+
+    private async Task SavePreferencesToCookies()
+    {
+        try
+        {
+            var maxAge = 365 * 24 * 60 * 60;
+            await JS.InvokeVoidAsync("eval",
+                $"document.cookie='theme={ThemeService.CurrentTheme};path=/;max-age={maxAge};SameSite=Lax'");
+            await JS.InvokeVoidAsync("eval",
+                $"document.cookie='darkMode={ThemeService.IsDarkMode.ToString().ToLowerInvariant()};path=/;max-age={maxAge};SameSite=Lax'");
+        }
+        catch
+        {
+            // JS interop not available during prerender
+        }
     }
 
     private void OnThemeChanged()

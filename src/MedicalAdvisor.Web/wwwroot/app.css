@@ -1,6 +1,6 @@
 /* ===== CSS Custom Properties -- Soft Clinical Design System ===== */
 
-/* Clinical theme (default) -- soft periwinkle blue */
+/* Clinical Light (default) -- soft periwinkle blue */
 .theme-clinical,
 :root {
     --bg-primary: #F8F9FC;
@@ -25,7 +25,31 @@
     --app-bar-border: #E5E7EB;
 }
 
-/* Friendly theme -- soft sage green */
+/* Clinical Dark -- blue accents + dark surfaces */
+.theme-clinical.dark-mode {
+    --bg-primary: #16171C;
+    --bg-surface: #1E1F25;
+    --bg-surface-hover: #2A2B33;
+    --bg-user-bubble: #2A2D3A;
+    --bg-assistant-bubble: #1E1F25;
+    --accent: #7C9BF0;
+    --accent-light: #2A2D3A;
+    --accent-hover: #6B8AE0;
+    --text-primary: #E4E6EB;
+    --text-secondary: #9CA3AF;
+    --text-on-accent: #FFFFFF;
+    --border: #2E3039;
+    --shadow-soft: 0 2px 12px rgba(0,0,0,0.25);
+    --shadow-medium: 0 4px 20px rgba(0,0,0,0.35);
+    --shadow-hover: 0 6px 24px rgba(0,0,0,0.40);
+    --quick-reply-bg: #2A2B33;
+    --quick-reply-border: #3A3B45;
+    --quick-reply-hover: #35363F;
+    --app-bar-bg: rgba(30, 31, 37, 0.90);
+    --app-bar-border: #2E3039;
+}
+
+/* Friendly Light -- soft sage green */
 .theme-friendly {
     --bg-primary: #F7FAF8;
     --bg-surface: #FFFFFF;
@@ -49,16 +73,16 @@
     --app-bar-border: #E5E7EB;
 }
 
-/* Dark theme */
-.theme-dark {
+/* Friendly Dark -- green accents + dark surfaces */
+.theme-friendly.dark-mode {
     --bg-primary: #16171C;
     --bg-surface: #1E1F25;
     --bg-surface-hover: #2A2B33;
-    --bg-user-bubble: #2A2D3A;
+    --bg-user-bubble: #253530;
     --bg-assistant-bubble: #1E1F25;
-    --accent: #7C9BF0;
-    --accent-light: #2A2D3A;
-    --accent-hover: #6B8AE0;
+    --accent: #6BC4A0;
+    --accent-light: #253530;
+    --accent-hover: #5AB890;
     --text-primary: #E4E6EB;
     --text-secondary: #9CA3AF;
     --text-on-accent: #FFFFFF;
@@ -68,9 +92,17 @@
     --shadow-hover: 0 6px 24px rgba(0,0,0,0.40);
     --quick-reply-bg: #2A2B33;
     --quick-reply-border: #3A3B45;
-    --quick-reply-hover: #35363F;
+    --quick-reply-hover: #2F3530;
     --app-bar-bg: rgba(30, 31, 37, 0.90);
     --app-bar-border: #2E3039;
+}
+
+/* ===== Theme Root ===== */
+.theme-root {
+    height: 100%;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ===== Global Styles ===== */
@@ -461,42 +493,40 @@ html, body {
 /* ===== Theme Switcher ===== */
 .theme-switcher {
     display: flex;
-    gap: 2px;
-    background-color: var(--bg-surface-hover);
-    border-radius: 20px;
-    padding: 2px;
-    transition: background-color 0.3s ease;
-}
-
-.theme-pill {
-    display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 6px 10px;
-    border-radius: 18px;
-    border: none;
+}
+
+.theme-sw-icon.mud-icon-root {
+    font-size: 18px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    transition: color 0.3s ease;
+}
+
+.theme-sw-label {
     font-family: 'Inter', sans-serif;
-    font-weight: 500;
     font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: transparent;
+    font-weight: 500;
     color: var(--text-secondary);
     white-space: nowrap;
+    transition: color 0.3s ease;
 }
 
-.theme-pill.active {
-    background-color: var(--bg-surface);
-    color: var(--accent);
-    box-shadow: var(--shadow-soft);
+.theme-sw-toggle {
+    margin: 0 !important;
 }
 
-.theme-pill:hover:not(.active) {
-    color: var(--text-primary);
+.theme-sw-toggle .mud-switch-base {
+    padding: 4px !important;
 }
 
-.theme-pill .mud-icon-root {
-    font-size: 16px;
+.theme-sw-divider {
+    width: 1px;
+    height: 20px;
+    background-color: var(--border);
+    margin: 0 6px;
+    transition: background-color 0.3s ease;
 }
 
 /* ===== Animations ===== */
@@ -573,17 +603,13 @@ html, body {
         padding: 6px 6px 6px 12px;
     }
 
-    /* Theme switcher: hide labels, show icons only */
-    .theme-pill span {
-        display: none;
+    /* Theme switcher: compact on mobile */
+    .theme-sw-icon.mud-icon-root {
+        font-size: 16px;
     }
 
-    .theme-pill {
-        padding: 8px 10px;
-    }
-
-    .theme-pill .mud-icon-root {
-        font-size: 18px;
+    .theme-sw-divider {
+        margin: 0 2px;
     }
 
     /* App bar title smaller */
