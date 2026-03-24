@@ -138,8 +138,13 @@ html, body {
     -webkit-backdrop-filter: blur(12px);
     background: var(--app-bar-bg);
     border-bottom: 1px solid var(--app-bar-border);
-    transition: background 0.3s ease, border-color 0.3s ease;
+    transition: background 0.3s ease, border-color 0.3s ease, padding 0.25s ease;
     z-index: 10;
+    position: relative;
+}
+
+.app-header.collapsed {
+    padding: 0 16px;
 }
 
 .app-header-row {
@@ -157,6 +162,47 @@ html, body {
     font-size: 18px;
     color: var(--accent);
     transition: color 0.3s ease;
+}
+
+/* Header toggle button */
+.header-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 12px;
+    bottom: -14px;
+    width: 28px;
+    height: 14px;
+    border: 1px solid var(--app-bar-border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    background: var(--app-bar-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
+    padding: 0;
+    z-index: 11;
+    transition: background 0.2s ease;
+}
+
+.header-toggle:hover {
+    background: var(--bg-surface-hover);
+}
+
+.header-toggle-arrow {
+    font-size: 10px;
+    line-height: 1;
+    color: var(--text-secondary);
+    transition: transform 0.25s ease;
+}
+
+.header-toggle-arrow.arrow-down {
+    transform: rotate(180deg);
+}
+
+.header-toggle-arrow.arrow-up {
+    transform: rotate(0deg);
 }
 
 /* ===== Chat Layout ===== */

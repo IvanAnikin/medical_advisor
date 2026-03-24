@@ -8,13 +8,19 @@
 <MudSnackbarProvider />
 
 <div class="theme-root @ThemeService.ThemeCssClass">
-    <div class="app-header">
-        <div class="app-header-row">
-            <span class="app-bar-title">Diabetologický poradce</span>
-        </div>
-        <div class="app-header-row app-header-controls">
-            <ThemeSwitcher />
-        </div>
+    <div class="app-header @(_headerCollapsed ? "collapsed" : "")">
+        @if (!_headerCollapsed)
+        {
+            <div class="app-header-row">
+                <span class="app-bar-title">Diabetologický poradce</span>
+            </div>
+            <div class="app-header-row app-header-controls">
+                <ThemeSwitcher />
+            </div>
+        }
+        <button class="header-toggle" @onclick="ToggleHeader" title="@(_headerCollapsed ? "Zobrazit záhlaví" : "Skrýt záhlaví")">
+            <span class="header-toggle-arrow @(_headerCollapsed ? "arrow-down" : "arrow-up")">&#9650;</span>
+        </button>
     </div>
     <div class="app-body">
         @Body
@@ -25,6 +31,13 @@
     protected override void OnInitialized()
     {
         ThemeService.OnThemeChanged += OnThemeChanged;
+    }
+
+    private bool _headerCollapsed;
+
+    private void ToggleHeader()
+    {
+        _headerCollapsed = !_headerCollapsed;
     }
 
     private void OnThemeChanged()
