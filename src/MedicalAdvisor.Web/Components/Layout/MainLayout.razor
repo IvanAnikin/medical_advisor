@@ -8,16 +8,17 @@
 <MudSnackbarProvider />
 
 <div class="theme-root @ThemeService.ThemeCssClass">
-    <MudLayout>
-        <MudAppBar Elevation="0" Class="app-bar-custom">
-            <span class="app-bar-title ml-3">Diabetologický poradce</span>
-            <MudSpacer />
+    <div class="app-header">
+        <div class="app-header-row">
+            <span class="app-bar-title">Diabetologický poradce</span>
+        </div>
+        <div class="app-header-row app-header-controls">
             <ThemeSwitcher />
-        </MudAppBar>
-        <MudMainContent Class="pa-0" Style="height: calc(100vh - var(--mud-appbar-height)); overflow: hidden;">
-            @Body
-        </MudMainContent>
-    </MudLayout>
+        </div>
+    </div>
+    <div class="app-body">
+        @Body
+    </div>
 </div>
 
 @code {
