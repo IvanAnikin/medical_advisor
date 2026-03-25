@@ -71,6 +71,9 @@
     private MudTextField<string>? _inputField;
     private CancellationTokenSource? _cts;
 
+    [CascadingParameter]
+    public MainLayout? Layout { get; set; }
+
     protected override void OnInitialized()
     {
         ThemeService.OnThemeChanged += OnThemeChanged;
@@ -192,6 +195,10 @@
             _cts = null;
             RequestScrollToBottom();
             StateHasChanged();
+
+            // Auto-save conversation after each completed response.
+            if (Layout is not null)
+                await Layout.SaveCurrentSessionAsync();
         }
     }
 

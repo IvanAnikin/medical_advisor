@@ -10,6 +10,7 @@ public class ConversationState
 
     public List<ChatMessage> Messages { get; private set; } = [];
     public ChatHistory ChatHistory { get; private set; } = new();
+    public string? CurrentSessionId { get; set; }
 
     public ConversationState()
     {
@@ -44,8 +45,69 @@ public class ConversationState
     {
         Messages.Clear();
         ChatHistory = new ChatHistory();
+        CurrentSessionId = null;
         AddWelcomeMessage();
     }
+
+    /// <summary>
+    /// Creates a snapshot of the current conversation for saving.
+    /// </summary>
+    public ConversationSession ToSession()
+    {
+        // Derive title from first user message or fallback.
+        var firstUserMsg = Messages.FirstOrDefault(m => m.Role == Models.ChatRole.User);
+        var title = firstUserMsg?.Content ?? "Nová konverzace";
+        if (title.Length > 50)
+            title = title[..47] + "...";
+
+        return new ConversationSession
+        {
+            Id = CurrentSessionId ?? Guid.NewGuid().ToString("N")[..8],
+            Title = title,
+            CreatedAt = Messages.FirstOrDefault()?.Timestamp ?? DateTime.Now,
+            UpdatedAt = DateTime.Now,
+            Messages = Messages
+                .Where(m => !m.IsStreaming)
+                .Select(m => new SessionMessage
+                {
+                    Role = m.Role,
+                    Content = m.Content,
+                    Timestamp = m.Timestamp
+                })
+                .ToList()
+        };
+    }
+
+    /// <summary>
+    /// Restores conversation from a saved session.
+    /// </summary>
+    public void LoadFromSession(ConversationSession session)
+    {
+        Messages.Clear();
+        ChatHistory = new ChatHistory();
+        CurrentSessionId = session.Id;
+
+        foreach (var msg in session.Messages)
+        {
+            Messages.Add(new ChatMessage
+            {
+                Role = msg.Role,
+                Content = msg.Content,
+                Timestamp = msg.Timestamp,
+                ShowQuickReplies = false,
+            });
+
+            if (msg.Role == Models.ChatRole.User)
+                ChatHistory.AddUserMessage(msg.Content);
+            else
+                ChatHistory.AddAssistantMessage(msg.Content);
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the conversation has any user messages (worth saving).
+    /// </summary>
+    public bool HasUserMessages => Messages.Any(m => m.Role == Models.ChatRole.User);
 
     private void AddWelcomeMessage()
     {
@@ -56,7 +118,6 @@ public class ConversationState
             Timestamp = DateTime.Now,
         });
 
-        // The welcome message is not added to ChatHistory — it is part of the
-        // system prompt context, not a prior assistant turn for the LLM.
+        ChatHistory.AddAssistantMessage(WelcomeMessage);
     }
 }

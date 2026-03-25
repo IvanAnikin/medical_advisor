@@ -1,6 +1,7 @@
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject ThemeService ThemeService
+@inject IJSRuntime JS
 
 <MudThemeProvider Theme="ThemeService.CurrentMudTheme" IsDarkMode="ThemeService.IsDarkMode" />
 <MudPopoverProvider />
@@ -12,9 +13,13 @@
         @if (!_headerCollapsed)
         {
             <div class="app-header-row">
-                <span class="app-bar-title">Diabetologický poradce</span>
+                <a href="/" class="app-bar-title" @onclick="ReloadPage" @onclick:preventDefault>Diabetologický poradce</a>
             </div>
             <div class="app-header-row app-header-controls">
+                <button class="session-history-btn" @onclick="ToggleSessionPopup" title="Historie konverzací">
+                    <MudIcon Icon="@Icons.Material.Filled.History" Size="Size.Small" />
+                </button>
+                <div class="theme-sw-divider"></div>
                 <ThemeSwitcher />
             </div>
         }
@@ -23,8 +28,13 @@
         </button>
     </div>
     <div class="app-body">
-        @Body
+        <CascadingValue Value="this">
+            @Body
+        </CascadingValue>
     </div>
+
+    @* Session history popup rendered at root level to escape header stacking context *@
+    <SessionHistory @ref="_sessionHistory" OnSessionLoaded="OnSessionLoaded" ShowPopup="_showSessionPopup" OnClose="CloseSessionPopup" />
 </div>
 
 @code {
@@ -34,10 +44,41 @@
     }
 
     private bool _headerCollapsed;
+    private bool _showSessionPopup;
+    private SessionHistory? _sessionHistory;
+
+    public async Task SaveCurrentSessionAsync()
+    {
+        if (_sessionHistory is not null)
+            await _sessionHistory.SaveCurrentSession();
+    }
+
+    private void OnSessionLoaded()
+    {
+        _showSessionPopup = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleSessionPopup()
+    {
+        _showSessionPopup = !_showSessionPopup;
+    }
+
+    private void CloseSessionPopup()
+    {
+        _showSessionPopup = false;
+    }
 
     private void ToggleHeader()
     {
         _headerCollapsed = !_headerCollapsed;
+    }
+
+    private async Task ReloadPage()
+    {
+        // Save current conversation before starting fresh.
+        await SaveCurrentSessionAsync();
+        await JS.InvokeVoidAsync("location.reload");
     }
 
     private void OnThemeChanged()

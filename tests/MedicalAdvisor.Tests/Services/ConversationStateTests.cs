@@ -40,12 +40,12 @@ public class ConversationStateTests
     }
 
     [Fact]
-    public void InitialState_ChatHistoryIsEmpty()
+    public void InitialState_ChatHistoryContainsWelcomeMessage()
     {
-        // Welcome message is NOT added to ChatHistory per the implementation
         var state = new ConversationState();
 
-        Assert.Empty(state.ChatHistory);
+        Assert.Single(state.ChatHistory);
+        Assert.Equal(ConversationState.WelcomeMessage, state.ChatHistory[0].Content);
     }
 
     [Fact]

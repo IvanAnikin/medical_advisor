@@ -1,0 +1,163 @@
+@inject ConversationState ConversationState
+@inject IJSRuntime JS
+
+@if (ShowPopup)
+{
+    <div class="session-overlay" @onclick="Close"></div>
+    <div class="session-popup">
+        <div class="session-popup-header">
+            <MudIcon Icon="@Icons.Material.Filled.History" Size="Size.Small" Style="color: var(--accent);" />
+            <span>Historie konverzací</span>
+            <button class="session-close-btn" @onclick="Close">✕</button>
+        </div>
+        <div class="session-popup-body">
+            @if (_sessions.Count == 0)
+            {
+                <div class="session-empty">
+                    <MudIcon Icon="@Icons.Material.Outlined.ChatBubbleOutline" Size="Size.Large" Style="color: var(--border); margin-bottom: 8px;" />
+                    <div>Žádné uložené konverzace</div>
+                </div>
+            }
+            else
+            {
+                @foreach (var (session, index) in _sessions.OrderByDescending(s => s.UpdatedAt).Select((s, i) => (s, i)))
+                {
+                    <div class="session-card @(session.Id == ConversationState.CurrentSessionId ? "active" : "")"
+                         style="animation-delay: @(index * 50)ms;"
+                         @onclick="() => LoadSession(session)">
+                        <div class="session-card-content">
+                            <div class="session-card-title">@session.Title</div>
+                            <div class="session-card-meta">
+                                <span>@session.UpdatedAt.ToString("d.M. HH:mm")</span>
+                                <span class="session-card-dot">·</span>
+                                <span>@FormatMessageCount(session)</span>
+                            </div>
+                        </div>
+                        <button class="session-delete-btn" @onclick="() => DeleteSession(session.Id)" @onclick:stopPropagation="true" title="Smazat">
+                            <MudIcon Icon="@Icons.Material.Filled.Close" Size="Size.Small" />
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private const int MaxSessions = 5;
+    private const string StorageKey = "medical_advisor_sessions";
+
+    private List<ConversationSession> _sessions = [];
+
+    [Parameter]
+    public bool ShowPopup { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback OnSessionLoaded { get; set; }
+
+    [Parameter]
+    public EventCallback OnNewConversation { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadSessions();
+            StateHasChanged();
+        }
+    }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    public async Task SaveCurrentSession()
+    {
+        if (!ConversationState.HasUserMessages)
+            return;
+
+        var session = ConversationState.ToSession();
+        ConversationState.CurrentSessionId = session.Id;
+
+        // Replace existing or add new.
+        var existing = _sessions.FindIndex(s => s.Id == session.Id);
+        if (existing >= 0)
+            _sessions[existing] = session;
+        else
+            _sessions.Add(session);
+
+        // Keep only the most recent MaxSessions.
+        if (_sessions.Count > MaxSessions)
+        {
+            _sessions = _sessions
+                .OrderByDescending(s => s.UpdatedAt)
+                .Take(MaxSessions)
+                .ToList();
+        }
+
+        await PersistSessions();
+    }
+
+    private async Task LoadSession(ConversationSession session)
+    {
+        // Save current conversation first if it has content.
+        await SaveCurrentSession();
+
+        ConversationState.LoadFromSession(session);
+
+        await OnSessionLoaded.InvokeAsync();
+    }
+
+    private async Task DeleteSession(string id)
+    {
+        _sessions.RemoveAll(s => s.Id == id);
+        await PersistSessions();
+
+        if (ConversationState.CurrentSessionId == id)
+            ConversationState.CurrentSessionId = null;
+    }
+
+    private static string FormatMessageCount(ConversationSession session)
+    {
+        var count = session.Messages.Count(m => m.Role == ChatRole.User);
+        return count switch
+        {
+            1 => "1 zpráva",
+            >= 2 and <= 4 => $"{count} zprávy",
+            _ => $"{count} zpráv"
+        };
+    }
+
+    private async Task LoadSessions()
+    {
+        try
+        {
+            var json = await JS.InvokeAsync<string?>("localStorage.getItem", StorageKey);
+            if (!string.IsNullOrEmpty(json))
+            {
+                _sessions = System.Text.Json.JsonSerializer.Deserialize<List<ConversationSession>>(json) ?? [];
+            }
+        }
+        catch
+        {
+            _sessions = [];
+        }
+    }
+
+    private async Task PersistSessions()
+    {
+        try
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(_sessions);
+            await JS.InvokeVoidAsync("localStorage.setItem", StorageKey, json);
+        }
+        catch
+        {
+            // Ignore storage errors (private browsing, quota exceeded, etc.)
+        }
+    }
+}
