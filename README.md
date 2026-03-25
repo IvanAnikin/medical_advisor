@@ -46,7 +46,7 @@ The bot drives the conversation by asking clarifying questions (type of diabetes
 | AI orchestration | Microsoft Semantic Kernel | .NET-native OpenAI integration, streaming chat, prompt management |
 | UI components | MudBlazor | Material Design for Blazor, rich component library, MIT licensed |
 | Authentication | None (anonymous) | Low friction for patients -- no login required |
-| Database | None (stateless) | No persistence needed; sessions are ephemeral in server memory |
+| Session persistence | Browser localStorage | Up to 5 sessions saved client-side, no server DB needed |
 | Language | Czech only | Target audience is Czech-speaking diabetes patients |
 
 ---
@@ -57,11 +57,15 @@ The bot drives the conversation by asking clarifying questions (type of diabetes
 - **Streaming responses** -- Token-by-token display via SignalR for responsive feel
 - **Document grounding** -- All answers strictly sourced from 4 verified medical documents
 - **4 diabetes topics** -- Insulin therapy, CGM monitoring, foot care, physical activity
-- **Two selectable themes** -- Clinical (blue) and Friendly (teal), switchable via header toggle
+- **Dual theme system** -- Clinical (blue) / Friendly (teal) + Light / Dark mode (4 combinations), switchable via header toggles with cookie persistence
+- **Collapsible header** -- Two-row custom header (title + controls) with toggle arrow to collapse/expand, saving screen space
+- **Session history** -- Up to 5 conversation sessions saved in browser localStorage, restored via a floating popup with animated cards and Czech pluralization
+- **Page reload on title click** -- Clicking the app title saves the current session and reloads the page to start a fresh conversation
 - **Markdown rendering** -- Bold, italic, and line breaks in chat messages
 - **Error handling** -- Errors displayed inline in chat; graceful degradation for missing documents
-- **Responsive layout** -- Full viewport chat interface with auto-scroll and keyboard shortcuts (Enter to send, Shift+Enter for newline)
-- **No data collection** -- Anonymous, stateless, no cookies, no tracking
+- **Mobile responsive** -- Sticky input area, responsive header, proper viewport handling on mobile devices
+- **Keyboard shortcuts** -- Enter to send, Shift+Enter for newline
+- **Minimal data footprint** -- Anonymous, no user accounts; theme preference in cookies, session history in localStorage only
 
 ---
 
@@ -108,7 +112,7 @@ The bot drives the conversation by asking clarifying questions (type of diabetes
 | `DocumentService` | **Singleton** | Loads documents once at startup, shared across all sessions |
 | `MedicalAdvisorService` | **Scoped** | Per-circuit AI chat orchestration with Semantic Kernel |
 | `ConversationState` | **Scoped** | Per-circuit chat messages (UI) + ChatHistory (LLM context) |
-| `ThemeService` | **Scoped** | Per-circuit theme preference |
+| `ThemeService` | **Scoped** | Per-circuit dual theme state (Clinical/Friendly + Light/Dark) |
 | `IChatCompletionService` | Registered by SK | Azure OpenAI chat completion via Semantic Kernel |
 
 ### Dual History Pattern
@@ -116,9 +120,9 @@ The bot drives the conversation by asking clarifying questions (type of diabetes
 `ConversationState` maintains two separate collections:
 
 - **`Messages`** (List\<ChatMessage\>) -- For UI display. Includes the welcome message. Managed by `Home.razor`.
-- **`ChatHistory`** (SK ChatHistory) -- For the LLM context. Excludes the welcome message (it is part of the system prompt). Managed by `MedicalAdvisorService`.
+- **`ChatHistory`** (SK ChatHistory) -- For the LLM context. Includes the welcome message as an assistant message so the LLM knows it already greeted the user (prevents double greeting). Managed by `MedicalAdvisorService`.
 
-This separation prevents the welcome message from being double-counted in the LLM context and keeps UI concerns separate from AI concerns.
+This separation keeps UI concerns separate from AI concerns while ensuring the LLM has full conversation context.
 
 ---
 
@@ -185,12 +189,13 @@ medical_advisor/
 |   |   +-- launchSettings.json           # Local dev ports (5113, 7128)
 |   |-- Models/
 |   |   |-- ChatMessage.cs                # ChatRole enum + ChatMessage class
-|   |   +-- AppTheme.cs                   # AppTheme enum (Clinical, Friendly)
+|   |   |-- AppTheme.cs                   # AppTheme enum (Clinical, Friendly)
+|   |   +-- ConversationSession.cs        # Serializable session model for localStorage
 |   |-- Services/
 |   |   |-- DocumentService.cs            # Loads 4 docs at startup (singleton)
 |   |   |-- MedicalAdvisorService.cs      # SK streaming chat orchestration (scoped)
 |   |   |-- ConversationState.cs          # Per-circuit messages + ChatHistory (scoped)
-|   |   +-- ThemeService.cs               # Theme state + MudTheme definitions (scoped)
+|   |   +-- ThemeService.cs               # Dual theme state + 4 MudTheme definitions (scoped)
 |   |-- Prompts/
 |   |   +-- SystemPrompt.txt              # Czech AI persona + grounding rules
 |   |-- Components/
@@ -198,16 +203,17 @@ medical_advisor/
 |   |   |-- _Imports.razor                # Global @using directives
 |   |   |-- Routes.razor                  # Router with MainLayout default
 |   |   |-- Layout/
-|   |   |   |-- MainLayout.razor          # App bar + MudThemeProvider + content
+|   |   |   |-- MainLayout.razor          # Custom collapsible header + theme root + session history
 |   |   |   +-- MainLayout.razor.css      # Scoped CSS (empty, MudBlazor handles it)
 |   |   |-- Pages/
-|   |   |   |-- Home.razor                # Main chat page (streaming + input)
+|   |   |   |-- Home.razor                # Main chat page (streaming + auto-save)
 |   |   |   +-- Error.razor               # Standard error page
 |   |   +-- Shared/
 |   |       |-- ChatMessageBubble.razor   # Message bubble (Markdown + streaming cursor)
-|   |       +-- ThemeSwitcher.razor        # Clinical/Friendly theme toggle
+|   |       |-- SessionHistory.razor      # Floating popup with localStorage session management
+|   |       +-- ThemeSwitcher.razor        # Dual toggle: Clinical/Friendly + Light/Dark
 |   |-- wwwroot/
-|   |   |-- app.css                       # Chat layout, bubble, cursor CSS
+|   |   |-- app.css                       # 4 theme combos, header, session popup, mobile responsive CSS
 |   |   |-- favicon.png                   # App favicon
 |   |   +-- bootstrap/                    # Bootstrap CSS (template artifact, unused)
 |   +-- docs/                             # Medical documents (published with app)
@@ -224,7 +230,7 @@ medical_advisor/
         +-- ThemeServiceTests.cs          # 12 tests: themes, switching, events
 ```
 
-**Total: 43 files, 32 unit tests**
+**Total: ~45 files, 57 unit tests**
 
 ---
 
@@ -348,7 +354,7 @@ info: MedicalAdvisor.Web.Services.DocumentService[0]
 ```bash
 export PATH="$HOME/.dotnet:$PATH"
 
-# Run all 32 tests
+# Run all tests
 dotnet test
 
 # Run with verbose output
@@ -360,8 +366,10 @@ dotnet test --verbosity normal
 | Test Class | Tests | What It Covers |
 |------------|-------|---------------|
 | `DocumentServiceTests` | 6 | Document loading, missing files, content verification, delimiters |
-| `ConversationStateTests` | 14 | Initial state, message CRUD, ChatHistory sync, reset, timestamps |
+| `ConversationStateTests` | 14 | Initial state, message CRUD, ChatHistory sync, reset, session export/import |
+| `MedicalAdvisorServiceTests` | 13 | AI service orchestration, streaming, error handling |
 | `ThemeServiceTests` | 12 | Default theme, switching, events, MudTheme color values |
+| `ChatMessageTests` | 12 | Message creation, properties, role handling |
 
 All tests use **xUnit** as the test framework and **Moq** for mocking `IWebHostEnvironment` and `ILogger`. `DocumentServiceTests` creates temporary directories with sample files and cleans up via `IDisposable`.
 
@@ -520,16 +528,18 @@ Total system prompt size: ~261K characters (~75K tokens).
 ### Component Hierarchy
 
 ```
-App.razor (root HTML document)
+App.razor (root HTML document, @rendermode InteractiveServer)
   +-- Routes.razor (router)
-       +-- MainLayout.razor (app bar + theme provider)
+       +-- MainLayout.razor (custom header + theme root + session history)
             |-- MudThemeProvider (bound to ThemeService.CurrentMudTheme)
-            |-- MudAppBar
-            |   |-- "Diabetologicky poradce" (title)
-            |   +-- ThemeSwitcher.razor (Clinical/Friendly toggle)
+            |-- Custom HTML header (two-row, collapsible)
+            |   |-- Row 1: Title (clickable, reloads page) + toggle arrow
+            |   +-- Row 2: Session History button + ThemeSwitcher.razor (dual toggles)
+            |-- SessionHistory.razor (floating popup, localStorage persistence)
             +-- Home.razor (chat page, @page "/")
+                |-- Welcome cards (quick-reply topic buttons)
                 |-- ChatMessageBubble.razor (foreach message)
-                +-- MudTextField + MudIconButton (input area)
+                +-- Sticky input area (pill-shaped, Enter to send)
 ```
 
 ---
@@ -550,29 +560,32 @@ The system prompt enforces strict grounding rules (defined in `Prompts/SystemPro
 
 ## Theming
 
-Two MudBlazor themes are available, switchable via the header toggle:
+The app supports a **dual theme system** with 4 combinations: Clinical/Friendly x Light/Dark. Both preferences are persisted in browser cookies (1-year expiry) so they survive page reloads.
 
-### Clinical Theme (default)
+### Theme Dimensions
 
-| Property | Value |
-|----------|-------|
-| Primary | `#1565C0` (blue) |
-| Secondary | `#42A5F5` (light blue) |
-| AppBar | `#1565C0` |
-| Background | `#FAFAFA` |
-| Border Radius | Default |
+| Dimension | Option A | Option B |
+|-----------|----------|----------|
+| Style | **Clinical** (blue, professional) | **Friendly** (teal, warm) |
+| Mode | **Light** (default) | **Dark** |
+
+### Clinical Theme
+
+| Property | Light | Dark |
+|----------|-------|------|
+| Primary | `#1565C0` (blue) | `#1565C0` |
+| Background | `#FAFAFA` | `#1a1a2e` |
+| Surface | white | `#16213e` |
 
 ### Friendly Theme
 
-| Property | Value |
-|----------|-------|
-| Primary | `#00897B` (teal) |
-| Secondary | `#4DB6AC` (light teal) |
-| AppBar | `#00897B` |
-| Background | `#FFF8F0` (warm white) |
-| Border Radius | `12px` |
+| Property | Light | Dark |
+|----------|-------|------|
+| Primary | `#00897B` (teal) | `#00897B` |
+| Background | `#FFF8F0` (warm white) | `#1a1a2e` |
+| Surface | white | `#16213e` |
 
-Theme state is managed by `ThemeService` (scoped per circuit). Changes propagate via the `OnThemeChanged` event, which triggers `StateHasChanged` in `MainLayout.razor` to re-render the `MudThemeProvider`.
+Theme state is managed by `ThemeService` (scoped per circuit) with two independent toggles in the header. CSS custom properties on `.theme-root` are used for non-MudBlazor elements (header, chat bubbles, session popup). Changes propagate via the `OnThemeChanged` event.
 
 ---
 
@@ -585,9 +598,9 @@ The project was built in 7 phases:
 | 1. Project Scaffolding | Solution, projects, NuGet packages, config | Done |
 | 2. Document Service & AI Service | DocumentService, MedicalAdvisorService, ConversationState, SystemPrompt | Done |
 | 3. Chat UI | Home.razor, ChatMessageBubble, streaming, auto-scroll, keyboard shortcuts | Done |
-| 4. Theming | ThemeService, ThemeSwitcher, MudThemeProvider, Clinical + Friendly themes | Done |
-| 5. Testing | 32 unit tests (DocumentService, ConversationState, ThemeService) | Done |
-| 6. Local Run | Build, test, run locally, verify all documents load | Done |
+| 4. Theming | Dual theme system (Clinical/Friendly + Light/Dark), cookie persistence, CSS custom properties | Done |
+| 5. Testing | 57 unit tests (DocumentService, ConversationState, ThemeService, MedicalAdvisorService, ChatMessage) | Done |
+| 6. UI Enhancements | Collapsible header, session history (localStorage), mobile responsive, title-click reload | Done |
 | 7. Azure Deployment | Resource group, App Service, config, ZIP deploy, verify production URL | Done |
 
 ### Key Implementation Decisions Made During Development
@@ -616,15 +629,15 @@ Context stuffing means every API call includes the full ~75K token system prompt
 ## Future Improvements
 
 - **RAG with vector search** -- Replace context stuffing with Azure AI Search for better scalability and lower per-call cost
-- **Conversation persistence** -- Add database storage (Cosmos DB or SQLite) for chat history
 - **User authentication** -- Azure AD B2C or anonymous session tracking
 - **Additional documents** -- Expand the knowledge base with more diabetes education materials
 - **Feedback mechanism** -- Allow patients to rate responses for quality monitoring
 - **CI/CD pipeline** -- GitHub Actions for automated build, test, and deploy on push to main
 - **Application Insights** -- Azure Monitor for telemetry, error tracking, and usage analytics
 - **Accessibility (a11y)** -- ARIA labels, screen reader support, high contrast theme
-- **Mobile optimization** -- PWA support for installable mobile experience
+- **PWA support** -- Installable mobile experience with offline capability
 - **Multi-language support** -- Slovak, English translations
+- **Server-side session persistence** -- Cosmos DB or SQLite for cross-device session sync
 
 ---
 
