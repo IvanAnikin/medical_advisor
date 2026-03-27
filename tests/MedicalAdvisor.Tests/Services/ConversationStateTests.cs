@@ -121,8 +121,8 @@ public class ConversationStateTests
         state.AddAssistantMessage("A1");
         state.AddUserMessage("Q2");
 
-        // ChatHistory should have 3 entries (welcome is excluded)
-        Assert.Equal(3, state.ChatHistory.Count);
+        // ChatHistory should have 4 entries (1 welcome + 3 additions)
+        Assert.Equal(4, state.ChatHistory.Count);
     }
 
     [Fact]
@@ -133,8 +133,10 @@ public class ConversationStateTests
         state.AddUserMessage("Q1");
         state.AddAssistantMessage("A1");
 
-        Assert.Equal(Microsoft.SemanticKernel.ChatCompletion.AuthorRole.User, state.ChatHistory[0].Role);
-        Assert.Equal(Microsoft.SemanticKernel.ChatCompletion.AuthorRole.Assistant, state.ChatHistory[1].Role);
+        // Index 0 is the welcome assistant message
+        Assert.Equal(Microsoft.SemanticKernel.ChatCompletion.AuthorRole.Assistant, state.ChatHistory[0].Role);
+        Assert.Equal(Microsoft.SemanticKernel.ChatCompletion.AuthorRole.User, state.ChatHistory[1].Role);
+        Assert.Equal(Microsoft.SemanticKernel.ChatCompletion.AuthorRole.Assistant, state.ChatHistory[2].Role);
     }
 
     [Fact]
@@ -159,11 +161,13 @@ public class ConversationStateTests
 
         state.AddUserMessage("Q1");
         state.AddAssistantMessage("A1");
-        Assert.Equal(2, state.ChatHistory.Count);
+        // 1 welcome + 2 additions = 3
+        Assert.Equal(3, state.ChatHistory.Count);
 
         state.Reset();
 
-        Assert.Empty(state.ChatHistory);
+        // After reset, ChatHistory contains just the welcome message
+        Assert.Single(state.ChatHistory);
     }
 
     [Fact]
