@@ -377,9 +377,17 @@ All tests use **xUnit** as the test framework and **Moq** for mocking `IWebHostE
 
 ## Deployment
 
-### Azure Resources Required
+### Overview
 
-The app is deployed to Azure App Service with the following resources:
+The app is deployed to **Azure App Service** (Linux, B1 Basic tier) via ZIP deploy. The deployment process involves:
+
+1. Building a Release publish bundle with `dotnet publish`
+2. Zipping the output
+3. Deploying the ZIP via Azure CLI (`az webapp deploy`)
+
+The published bundle includes the compiled app, the 4 medical documents (`docs/`), the system prompt (`Prompts/`), and all static assets (`wwwroot/`).
+
+### Azure Resources Required
 
 | Resource | Name | Details |
 |----------|------|---------|
@@ -388,89 +396,166 @@ The app is deployed to Azure App Service with the following resources:
 | Web App | `medical-advisor-cz` | .NET 8 runtime, WebSockets enabled |
 | Azure OpenAI | `anote-openai` (shared) | West Europe, `gpt-4-1-mini` deployment |
 
-### First-Time Setup
+### Prerequisites for Deployment
+
+1. **.NET 8 SDK** -- for `dotnet publish`
+2. **Azure CLI** -- for `az webapp deploy` (install via `pip install azure-cli` in a Python venv, or via Homebrew: `brew install azure-cli`)
+3. **Azure login** -- run `az login --use-device-code` before deploying
+4. **zip** utility -- available by default on macOS and most Linux distros
+
+### First-Time Azure Setup
+
+Only needed once to create the infrastructure:
 
 ```bash
-# Install Azure CLI (in a Python venv)
+# 1. Install Azure CLI (choose one method)
+# Option A: Python venv (recommended for isolation)
 python3 -m venv /tmp/az_venv
 source /tmp/az_venv/bin/activate
 pip install azure-cli
 
-# Login
+# Option B: Homebrew (macOS)
+brew install azure-cli
+
+# 2. Login to Azure
 az login --use-device-code
 
-# Create resource group
+# 3. Create resource group
 az group create --name medical-advisor-rg --location westeurope
 
-# Create App Service plan (B1 Basic, Linux)
+# 4. Create App Service plan (B1 Basic, Linux)
+#    NOTE: F1 Free tier is NOT sufficient -- see "Important Notes" below
 az appservice plan create \
   --name medical-advisor-plan \
   --resource-group medical-advisor-rg \
   --sku B1 --is-linux --location westeurope
 
-# Create web app
+# 5. Create the web app
 az webapp create \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --plan medical-advisor-plan \
   --runtime "DOTNETCORE:8.0"
 
-# Configure app settings (API key + config)
+# 6. Configure app settings (API key + Azure OpenAI config)
 az webapp config appsettings set \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --settings \
-    AzureOpenAI__ApiKey="<your-api-key>" \
+    AzureOpenAI__ApiKey="<your-azure-openai-api-key>" \
     AzureOpenAI__Endpoint="https://anote-openai.openai.azure.com/" \
     AzureOpenAI__DeploymentName="gpt-4-1-mini"
 
-# Enable WebSockets (required for Blazor Server / SignalR)
+# 7. Enable WebSockets (REQUIRED for Blazor Server / SignalR)
 az webapp config set \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --web-sockets-enabled true
 
-# Set startup command
+# 8. Set startup command
 az webapp config set \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --startup-file "dotnet MedicalAdvisor.Web.dll"
 
-# Increase startup timeout (documents take time to load on cold start)
+# 9. Increase startup timeout (documents take time to load on cold start)
 az webapp config appsettings set \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --settings WEBSITES_CONTAINER_START_TIME_LIMIT=600
 ```
 
-### Deploy / Redeploy
+### Deploy / Redeploy (Every Update)
+
+Use this workflow every time you deploy a new version:
 
 ```bash
+# Ensure .NET SDK and Azure CLI are on PATH
 export PATH="$HOME/.dotnet:$PATH"
-source /tmp/az_venv/bin/activate
+# If using Python venv for Azure CLI:
+# source /tmp/az_venv/bin/activate
 
-# Publish Release build
-dotnet publish src/MedicalAdvisor.Web/MedicalAdvisor.Web.csproj -c Release -o ./publish
+# Step 1: Run tests to make sure nothing is broken
+dotnet test
 
-# Create ZIP
+# Step 2: Publish a Release build
+dotnet publish src/MedicalAdvisor.Web/MedicalAdvisor.Web.csproj \
+  -c Release -o ./publish
+
+# Step 3: Create ZIP from publish output
 cd publish && zip -r ../deploy.zip . && cd ..
 
-# Deploy
+# Step 4: Deploy to Azure App Service
 az webapp deploy \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --src-path deploy.zip --type zip
 
-# Clean up
+# Step 5: Clean up local artifacts
 rm -rf publish deploy.zip
+
+# Step 6: Verify the deployment is running
+az webapp show \
+  --name medical-advisor-cz \
+  --resource-group medical-advisor-rg \
+  --query "state" -o tsv
+# Expected output: "Running"
 ```
 
-### Deployment Notes
+After deployment, wait ~60-90 seconds for the cold start, then verify at:
+**https://medical-advisor-cz.azurewebsites.net**
 
-- **F1 (Free) tier is insufficient** -- the 60 min/day CPU quota gets consumed during deployment and cold starts with 261K chars of document loading. B1 (Basic) is the minimum viable tier.
-- **Cold start** on B1 takes ~60-90 seconds due to Linux container setup + certificate updates + document loading. The `WEBSITES_CONTAINER_START_TIME_LIMIT=600` setting prevents premature timeout.
-- **WebSockets must be enabled** for Blazor Server's SignalR connection.
-- **`docs/` and `Prompts/` folders** must be in the publish output. This is ensured by `<Content Include="docs\**\*" CopyToOutputDirectory="PreserveNewest" />` in the `.csproj`.
+### What Gets Published
+
+The `dotnet publish` output includes:
+
+| Folder/File | Source | Purpose |
+|-------------|--------|---------|
+| `MedicalAdvisor.Web.dll` | Compiled app | Main application binary |
+| `docs/*.txt` | `src/.../docs/` | 4 medical documents (261K chars) loaded at startup |
+| `Prompts/SystemPrompt.txt` | `src/.../Prompts/` | AI persona + grounding rules template |
+| `wwwroot/` | `src/.../wwwroot/` | Static assets (CSS, bootstrap) |
+| `wwwroot/_content/MudBlazor/` | NuGet | MudBlazor CSS + JS (auto-included) |
+| `appsettings.json` | Config | Azure OpenAI endpoint + deployment name |
+| `web.config` | Auto-generated | IIS/Kestrel hosting configuration |
+| `runtimes/` | .NET SDK | Platform-specific runtime binaries |
+
+The `docs/` and `Prompts/` folders are included via explicit `<Content>` items in the `.csproj`:
+
+```xml
+<ItemGroup>
+  <Content Include="docs\**\*" CopyToOutputDirectory="PreserveNewest" />
+  <Content Include="Prompts\**\*" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+### Important Notes
+
+| Topic | Details |
+|-------|---------|
+| **Minimum tier** | B1 Basic (~$13/month). F1 Free tier's 60 min/day CPU quota gets exhausted during deployment + cold starts with 261K chars of document loading. |
+| **Cold start time** | 60-90 seconds on B1 due to Linux container setup + certificate updates + loading 4 documents into memory. `WEBSITES_CONTAINER_START_TIME_LIMIT=600` prevents premature timeout. |
+| **WebSockets** | Must be enabled on the App Service. Blazor Server uses SignalR (WebSockets) for all UI updates. Without it, the app will not function. |
+| **API key security** | The Azure OpenAI API key is set as an App Service Configuration setting (`AzureOpenAI__ApiKey`), never committed to source code. Locally, use .NET User Secrets. |
+| **Git postBuffer** | If `git push` fails with HTTP 400 on large commits, increase the buffer: `git config http.postBuffer 524288000` |
+| **No CI/CD** | Currently deployed manually via ZIP deploy. A GitHub Actions pipeline is a planned future improvement. |
+
+### Checking Deployment Status
+
+```bash
+# Check if the app is running
+az webapp show --name medical-advisor-cz \
+  --resource-group medical-advisor-rg --query "state" -o tsv
+
+# Stream live logs (useful for debugging startup issues)
+az webapp log tail --name medical-advisor-cz \
+  --resource-group medical-advisor-rg
+
+# View recent deployment logs
+az webapp deployment list-publishing-credentials \
+  --name medical-advisor-cz \
+  --resource-group medical-advisor-rg
+```
 
 ---
 

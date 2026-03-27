@@ -34,7 +34,7 @@
         </MudContainer>
     </div>
 
-    <ScrollToBottomFab Visible="_showScrollFab" OnClick="ScrollToBottom" />
+    <ScrollToBottomFab Visible="_showScrollFab" OnClick="OnScrollToBottomClicked" />
 
     <div class="chat-input-area">
         <MudContainer MaxWidth="MaxWidth.Medium">
@@ -47,7 +47,7 @@
                               Sizing="InputSizing.Auto"
                               MaxLines="5"
                               Disabled="_isStreaming"
-                              Immediate="false"
+                              Immediate="true"
                               OnKeyDown="OnKeyDown"
                               Class="flex-grow-1"
                               Style="font-size: 15px;" />
@@ -68,6 +68,7 @@
     private bool _showWelcomeCards = true;
     private bool _showScrollFab;
     private bool _shouldScrollToBottom;
+    private bool _userScrolledUp;
     private MudTextField<string>? _inputField;
     private CancellationTokenSource? _cts;
 
@@ -86,7 +87,7 @@
             // Scroll to bottom on initial load only.
             await ScrollToBottom();
         }
-        else if (_shouldScrollToBottom)
+        else if (_shouldScrollToBottom && !_userScrolledUp)
         {
             _shouldScrollToBottom = false;
             await ScrollToBottom();
@@ -145,6 +146,7 @@
         if (_isStreaming) return;
 
         _isStreaming = true;
+        _userScrolledUp = false;
 
         // Add user message to UI display list only (service manages ChatHistory).
         ConversationState.Messages.Add(new ChatMessage
@@ -191,6 +193,7 @@
         {
             streamingMessage.IsStreaming = false;
             _isStreaming = false;
+            _userScrolledUp = false;
             _cts?.Dispose();
             _cts = null;
             RequestScrollToBottom();
@@ -205,6 +208,12 @@
     private void RequestScrollToBottom()
     {
         _shouldScrollToBottom = true;
+    }
+
+    private async Task OnScrollToBottomClicked()
+    {
+        _userScrolledUp = false;
+        await ScrollToBottom();
     }
 
     private async Task ScrollToBottom()
@@ -231,6 +240,12 @@
             {
                 _showScrollFab = newValue;
                 StateHasChanged();
+            }
+
+            // If user scrolls up during streaming, pause auto-scroll.
+            if (_isStreaming && !isAtBottom)
+            {
+                _userScrolledUp = true;
             }
         }
         catch
