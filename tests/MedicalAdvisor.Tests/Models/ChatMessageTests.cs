@@ -40,4 +40,44 @@ public class ChatMessageTests
 
         Assert.False(message.ShowQuickReplies);
     }
+
+    [Fact]
+    public void DoseGuidanceWarning_DefaultsToFalse()
+    {
+        var message = new ChatMessage();
+
+        Assert.False(message.HasDoseGuidanceWarning);
+    }
+
+    [Fact]
+    public void EmergencyCallButton_DefaultsToFalse()
+    {
+        var message = new ChatMessage();
+
+        Assert.False(message.ShowEmergencyCallButton);
+    }
+
+    [Fact]
+    public void DetectedLanguage_DefaultsToNull()
+    {
+        var message = new ChatMessage();
+
+        Assert.Null(message.DetectedLanguage);
+    }
+
+    [Fact]
+    public void AdvisorId_DefaultsToNull()
+    {
+        var message = new ChatMessage();
+
+        Assert.Null(message.AdvisorId);
+    }
+
+    [Fact]
+    public void AdvisorId_CanBeSetAndRead()
+    {
+        var message = new ChatMessage { AdvisorId = "diabetes-2" };
+
+        Assert.Equal("diabetes-2", message.AdvisorId);
+    }
 }

@@ -1,0 +1,133 @@
+EM CD 33 Verze 03 • 2025-05 pikk • Edukační materiál pro pacienty • Centrum diabetologie IKEM • Kontakt: diaedukace@ikem.cz
+Co je to hybridní uzavřený okruh?
+  Snížení zátěže cukrovkou
+Systém samostatně upravuje dávku inzulinu a kompenzuje glykémie. Díky tomu má uživatel méně alarmů 
+senzoru a nemusí věnovat péči o diabetes tolik času. 
+  Ranní glykémie v cíli 
+Díky automatické úpravě bazálu dokáže systém zajistit ranní glykémii v cíli. Uživatel tak může v noci klid­
+ně spát a systém mu hlídá glykémie. 
+  Efektivnější a bezpečnější glykemická kompenzace
+Většina uživatelů dosáhne na hybridním okruhu doporučených cílů léčby, nebo se mu alespoň přiblíží. 
+Uživatelé mají méně hypoglykémií, menší kolísavost glykémií a nižší glykovaný hemoglobin. 
+1/2
+V ČEM JE HYBRIDNÍ OKRUH PŘÍNOSNÝ?
+Hybridní uzavřený okruh je kombinace inzulinové 
+pumpy, glukózového senzoru a algoritmu, který 
+částečně samostatně upravuje dávku inzulinu. 
+Pacient oznamuje pumpě jídla zadáním množství 
+sacharidů do pumpy. 
+V době mezi jídly a během lačnění pumpa sama 
+každých několik minut upravuje (zvyšuje či snižuje) 
+dávku inzulinu tak, aby se hladina glukózy držela v 
+cíli. 
+HYBRIDNÍ UZAVŘENÝ OKRUH TANDEM CONTROL IQ
+  Bazální dávka: 
+Pumpa každých 5 minut upraví uživatelem nas­
+tavenou bazální rychlost inzulinu tak, aby udržela 
+hodnoty glukózy mezi 6,2-8,9 mmol/l.
+  Autokorekční bolusy: 
+Při vysoké hladině glukózy může pumpa jednou 
+za hodinu vydat autokorekční bolus. Pumpa vydá 
+pouze 60% spočítané dávky, protože počítá s 
+tím, že v těle již působí aktivního inzulin z auto­
+matického bazálu. 
+  Bolusy před jídlem: 
+Uživatel před každým jídlem do pumpy zadá 
+gramy sacharidů, aby mohla pumpa vydat bolus k 
+jídlu. Výši bolusu lze upravit. Bez zadávání sacha­
+ridů však bude systém fungovat méně efektivně.
+•	 Bazální dávka: Systém z ní vychází při úpravě ba­
+zální rychlosti dle trendu hladiny glukózy. 
+•	 Sacharidový poměr: Udává, kolik gramů sacha­
+ridů Vám pokryje 1 jednotka inzulinu. Je určen k 
+výpočtu bolusu před každým jídlem. 
+•	 Korekční faktor: Udává, o kolik mmol/l Vám sníží 
+glykémii 1 jednotka inzulinu a slouží ke korekci 
+hyperglykémie. 
+•	 Tělesná hmotnost: Je potřeba zadat Vaši skuteč­
+nou tělesnou hmotnost. Pokud se vaše tělesná 
+hmotnost změní o 5% či více, aktualizujte toto 
+nastavení v pumpě.
+•	 Celková denní dávka inzulinu: Je potřeba zadat 
+vaši průměrnou dávku inzulinu za posledních 14 
+dní. Při změně celkové dávky inzulinu o více než 
+10%, aktualizujte toto nastavení v pumpě. 
+Uživatelovo nastavení aktivního inzulinu ani cílové 
+glykémie systém pro automatický mód nevyužívá. 
+JAK SYSTÉM DÁVKUJE INZULIN?
+Jaká nastavení jsou potřeba 
+pro automatický režim?
+EM CD 33 Verze 03 • 2025-05 pikk • Edukační materiál pro pacienty • Centrum diabetologie IKEM • Kontakt: diaedukace@ikem.cz
+Co musí dělat uživatel systému Tandem Control IQ?
+2/2
+  Aplikovat bolus před jídlem: 
+Systém pracuje nejlépe, když si uživatel podá bolus inzulinu 15 minut před jídlem bolus dle 
+spočítaných sacharidů v jídle (př. dle aplikace Kalorické tabulky). Ruční bolusy bez zadání sacharidů 
+nebývají dostatečně přesné pro zajištění optimální hladiny glukózy po jídle.  
+  Pravidelně přepichovat kanylu: 
+Každé 2-3 dny je nutné aplikovat novou podkožní kanylu. Při nefunkční kanyle systém nedokáže 
+dostat glykémie do cílového rozmezí. Místa vpichu je potřeba střídat, aby se nevytvořily zatvrdlinky 
+(lipodystrofie), z nichž se inzulin špatně vstřebává. 
+  Stahovat data z pumpy a senzoru: 
+Pro zhodnocení efektivity léčby a doporučení úpravy nastavení se musí lékař podívat na stažená data. 
+Uživatel může svá data stahovat a hodnotit sám i mezi návštěvami lékaře. 
+Kdy může být potřeba přepnout do ručního režimu?
+S pumpou Tandem jsou kompatibilní 
+senzory Dexcom G6 a Dexcom G7. 
+Měří-li senzor výrazně nepřesně, 
+zvažte jeho výměnu za nový. Během 
+zahřívání senzoru, kdy nezobrazu­
+je data, funguje pumpa v ručním 
+režimu a vydává uživatelem 
+nastavenou bazální dávku. 
+Jak se starat o senzor?
+Každý uživatel uzavřeného okruhu by umět používat ruční režim 
+pumpy a měl by mít doma náhradní režim (inzulinová pera) pro 
+případ poruchy pumpy.
+•	 Selže-li senzor: Bez funkčního senzoru se pumpa po 20 
+minutách přepne do ručního režimu. 
+•	 Problém s dodávkou inzulinu: Automatická dodávka inzu­
+linu nemusí být dostatečně efektivní při nefunkční kanyle, 
+zkaženém inzulinu či jiném technickém problému. Glykémii 
+může uživatel zkorigovat použitím náhradního režimu a po 
+stabilizaci stavu opět zapnout automatický mód.
+•	 Pumpa sama koriguje vysokou glykémii: Uživatel by měl 
+nechat korekce vysoké glykémie na algoritmu. Pokud si 
+chce přesto podat ruční korekční bolus, měl by vzít 
+v úvahu předchozí výdej inzulinu pumpou v autobazálu 
+a autokorekčních bolusech. Při ručních korekcích hrozí 
+nahromadění aktivního inzulinu a hypoglykémie. 
+•	 Při odpojení pumpy od těla zastavte výdej inzulinu 
+(v hlavním menu pumpy): Nenechávejte na pumpě 
+zapnutý výdej inzulinu, odpojujete-li ji od těla (při plavání, 
+koupeli, sexu apod.). Vydává-li uzavřený okruh inzulin 
+mimo tělo, může to vést k hyperglykémii 
+po znovupřipojení pumpy k tělu. 
+•	 Při rychlé změně potřeby inzulinu (nemoc, léčba kortikoi­
+dy, vysoký sportovní výdej atd.) může uživatel vytvořit 
+nový osobní profil s jiným nastavením bazálů a boluso­
+vého kalkulátoru a pokračovat s ním v automatickém 
+režimu dávkování inzulinu. Měl by zároveň dočasně 
+změnit průměrnou denní dávku inzulinu v nastavení 
+Control IQ tak, aby odpovídala novému nastavení 
+osobního profilu. 
+Co je dobré vědět?
+HYBRIDNÍ UZAVŘENÝ OKRUH TANDEM CONTROL IQ
+•	 Mód spánku: 
+Při něm systém kompenzuje 
+glykémie k těsnějšímu cíli, 
+ale nevydává autokorekční 
+bolusy. V pumpě lze čas spánku zapnout 
+ručně, či ho s funkcí Rozvrhy spánku 
+naprogramovat, aby se pravidelně 
+aktivoval sám.  
+•	 Mód fyzické aktivity: 
+V tomto dočasném režimu 
+pumpa cílí na hodnoty 
+7,8-8,9 mmol/l. Snižuje 
+přitom výdej inzulinu, aby se vyhnula 
+hypoglykémii. Dočasný cíl je vhodné 
+zapnout 1-2h před plánovanou aktivitou, 
+aby měl systém čas množství vydaného 
+inzulinu upravit. 
+Speciální funkce algoritmu

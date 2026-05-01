@@ -12,12 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.2.0" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.74.0" />
     <PackageReference Include="MudBlazor" Version="9.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="docs\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="docs\**\*" Exclude="docs\**\embeddings_cache.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Remove="docs\**\embeddings_cache.json" />
     <Content Include="Prompts\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

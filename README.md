@@ -394,12 +394,16 @@ The published bundle includes the compiled app, the 4 medical documents (`docs/`
 | Resource Group | `medical-advisor-rg` | West Europe |
 | App Service Plan | `medical-advisor-plan` | B1 Basic, Linux (~$13/month) |
 | Web App | `medical-advisor-cz` | .NET 8 runtime, WebSockets enabled |
-| Azure OpenAI | `anote-openai` (shared) | West Europe, `gpt-4-1-mini` deployment |
+| Azure OpenAI | `anote-openai` (shared) | West Europe, `gpt-5-4-mini` + `text-embedding-3-small` |
 
 ### Prerequisites for Deployment
 
 1. **.NET 8 SDK** -- for `dotnet publish`
-2. **Azure CLI** -- for `az webapp deploy` (install via `pip install azure-cli` in a Python venv, or via Homebrew: `brew install azure-cli`)
+2. **Azure CLI** -- the project uses the Azure CLI installed in a Python venv at:
+   ```
+   /Users/ivananikin/Documents/Ivanek-Anakin/ANOTE_mobile/.venv/bin/az
+   ```
+   Alternatively, install via `pip install azure-cli` in any Python venv, or via Homebrew: `brew install azure-cli`
 3. **Azure login** -- run `az login --use-device-code` before deploying
 4. **zip** utility -- available by default on macOS and most Linux distros
 
@@ -470,10 +474,9 @@ az webapp config appsettings set \
 Use this workflow every time you deploy a new version:
 
 ```bash
-# Ensure .NET SDK and Azure CLI are on PATH
+# Azure CLI from shared venv
+AZ=/Users/ivananikin/Documents/Ivanek-Anakin/ANOTE_mobile/.venv/bin/az
 export PATH="$HOME/.dotnet:$PATH"
-# If using Python venv for Azure CLI:
-# source /tmp/az_venv/bin/activate
 
 # Step 1: Run tests to make sure nothing is broken
 dotnet test
@@ -482,20 +485,23 @@ dotnet test
 dotnet publish src/MedicalAdvisor.Web/MedicalAdvisor.Web.csproj \
   -c Release -o ./publish
 
-# Step 3: Create ZIP from publish output
+# Step 3: Copy the pre-built embeddings cache (avoids rebuilding on Azure)
+cp src/MedicalAdvisor.Web/docs/pump/embeddings_cache.json publish/docs/pump/
+
+# Step 4: Create ZIP from publish output
 cd publish && zip -r ../deploy.zip . && cd ..
 
-# Step 4: Deploy to Azure App Service
-az webapp deploy \
+# Step 5: Deploy to Azure App Service
+"$AZ" webapp deploy \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --src-path deploy.zip --type zip
 
-# Step 5: Clean up local artifacts
+# Step 6: Clean up local artifacts
 rm -rf publish deploy.zip
 
-# Step 6: Verify the deployment is running
-az webapp show \
+# Step 7: Verify the deployment is running
+"$AZ" webapp show \
   --name medical-advisor-cz \
   --resource-group medical-advisor-rg \
   --query "state" -o tsv
@@ -512,8 +518,10 @@ The `dotnet publish` output includes:
 | Folder/File | Source | Purpose |
 |-------------|--------|---------|
 | `MedicalAdvisor.Web.dll` | Compiled app | Main application binary |
-| `docs/*.txt` | `src/.../docs/` | 4 medical documents (261K chars) loaded at startup |
-| `Prompts/SystemPrompt.txt` | `src/.../Prompts/` | AI persona + grounding rules template |
+| `docs/*.txt` | `src/.../docs/` | Medical documents (261K chars for diabetes) loaded at startup |
+| `docs/pump/` | `src/.../docs/pump/` | Pump advisor: summary + manual + embeddings cache |
+| `docs/gestational/` | `src/.../docs/gestational/` | Gestational diabetes document |
+| `Prompts/*.txt` | `src/.../Prompts/` | AI persona + grounding rules for each advisor |
 | `wwwroot/` | `src/.../wwwroot/` | Static assets (CSS, bootstrap) |
 | `wwwroot/_content/MudBlazor/` | NuGet | MudBlazor CSS + JS (auto-included) |
 | `appsettings.json` | Config | Azure OpenAI endpoint + deployment name |
@@ -570,7 +578,8 @@ az webapp deployment list-publishing-credentials \
 | App Service Plan | `medical-advisor-plan` (B1 Basic, Linux) |
 | Web App | `medical-advisor-cz` |
 | Azure OpenAI Resource | `anote-openai` (West Europe) |
-| Model Deployment | `gpt-4-1-mini` (gpt-4.1-mini, version 2025-04-14, Standard SKU) |
+| Chat Model Deployment | `gpt-5-4-mini` (gpt-5.4-mini, GlobalStandard, 100K TPM) |
+| Embedding Model Deployment | `text-embedding-3-small` (GlobalStandard, 120K TPM) |
 | Subscription | Visual Studio Ultimate with MSDN (`8a3849cc-c762-4a9c-8874-6487046bc245`) |
 
 ---
@@ -584,7 +593,7 @@ az webapp deployment list-publishing-credentials \
 3. **`MedicalAdvisorService.StreamResponseAsync`** is called:
    - Adds user message to `ConversationState.ChatHistory` (for LLM context)
    - Builds a fresh `ChatHistory`: system prompt (template + 261K chars of documents) + full conversation history
-   - Calls `IChatCompletionService.GetStreamingChatMessageContentsAsync` with Temperature=0.3, MaxTokens=1024, TopP=0.9
+   - Calls `IChatCompletionService.GetStreamingChatMessageContentsAsync` with Temperature=0.3, TopP=0.9
    - Yields each response chunk as it arrives
 4. **`Home.razor`** receives each chunk via `await foreach`, appends it to the streaming message's `Content`, calls `StateHasChanged()` and `ScrollToBottom()`
 5. **SignalR** pushes the DOM diff to the browser in real-time

@@ -1,0 +1,434 @@
+Diabeticky poradce 2 - normalizovany runtime dokument
+
+Zdroj: doktor-providovany dokument z adresare advisor1.2, prevedeny do plain textu a upraveny pro LLM pouziti.
+Ucel: plny kontext pro edukaci o diabetu, inzulinu, selfmonitoringu, hypoglykemii, hyperglykemii, sportu a prakticke aplikaci inzulinu.
+
+=== 1. Zakladni pojmy ===
+
+Diabetes mellitus je onemocneni, pri kterem telo nedokaze udrzet glukozu v krvi v normalnim rozmezi.
+
+Diabetes 1. typu:
+- chyba vlastni produkce inzulinu
+- bez dodavani inzulinu glykemie stoupa
+
+Diabetes 2. typu:
+- snizena citlivost tkan na inzulin
+- casto souvisi s nadbytkem tuku, zejmena v oblasti bricha
+- lecba muze zacinat tabletami nebo jinymi antidiabetiky a pozdeji pridanim inzulinu
+
+Typicke priznaky diabetu:
+- zizen
+- castejsi moceni
+- horsi videni
+- unava
+- pomalejsi hojeni ran
+- caste infekce
+
+Sacharidy:
+- jednoduche cukry se vstrebavaji rychle
+- slozene cukry a skroby se vstrebavaji postupne a jsou pro diabetickou stravu obvykle vhodnejsi
+
+Zakladni glykemicke pojmy:
+- glykemie = koncentrace glukozy v krvi v mmol/l
+- glukoza je zakladni zdroj energie
+- inzulin umoznuje vstup glukozy do bunek
+
+Rizika dlouhodobe spatne leceneho diabetu:
+- retinopatie
+- neuropatie
+- nefropatie
+- ateroskleroza, infarkt, mrtvice
+- spatne hojeni ran na nohou
+
+=== 2. Principy lecby inzulinem ===
+
+Cil lecby:
+- nalačno idealne 4,4-7,2 mmol/l
+- za 2 hodiny po zacatku jidla pod 7,8 mmol/l
+
+Zakladni typy inzulinu:
+- prandialni inzulin: pred jidlem, kryje prijem sacharidu po jidle
+- bazalni inzulin: pokryva potrebu inzulinu behem 24 hodin, zejmena mezi jidly a v noci
+
+Casovani prandialniho inzulinu:
+- lidsky inzulin obvykle 30-45 minut pred jidlem
+- analog 1. generace obvykle 10-20 minut pred jidlem
+- analog 2. generace az tesne pred jidlem, i do 5 minut
+
+Casovani bazalniho inzulinu:
+- caste podani vecer nebo na noc
+- bazalni analoga 2. generace umoznuji vetsi flexibilitu, obvykle az +-3 hodiny
+
+Rezim pro diabetes 1. typu:
+- kombinace bazalniho a prandialniho inzulinu
+- davka prandialniho inzulinu muze byt i pred svacinami, pokud obsahuji sacharidy
+
+Rezim pro diabetes 2. typu:
+- casto zaciname jednou davkou bazalniho inzulinu navic ke stavajici terapii
+- v nekterych pripadech se pouziva i rezim se 4 davkami denne nebo premixovany inzulin
+
+=== 3. Dieta a sacharidy ===
+
+Zasady diabeticke stravy:
+- primereny energeticky prijem
+- vyvazene makroziviny
+- sacharidy 50-60 % energie
+- tuky pod 30 % energie
+- bilkoviny 10-20 % energie
+- dostatek vlakniny, vitaminu a mineralu
+
+Prakticky princip:
+- regulovany prijem sacharidu pomaha urcit spravnou davku inzulinu pred jidlem
+- sacharidy maji byt rozdeleny do pravidelnych jidel
+- vyhodnejsi jsou sacharidy skrobove povahy a celozrnne zdroje
+
+Kde jsou sacharidy:
+- obiloviny a vyrobky z nich
+- brambory a prilohy
+- ovoce
+- mleko a mlecne vyrobky
+- sladkosti a slazene vyrobky
+- lusteniny a korenova zelenina
+
+=== 4. Jak hledat spravnou davku inzulinu ===
+
+Vyslednou glykemii nejvice ovlivnuji tri kontrolovatelne veličiny:
+- davka inzulinu
+- mnozstvi sacharidu v jidle
+- fyzicka aktivita pred injekci a po ni
+
+Zakladni pravidla:
+- vice sacharidu = obvykle vice inzulinu
+- mene sacharidu = obvykle mene inzulinu
+- vice fyzicke aktivity = obvykle mene inzulinu a nekdy vice sacharidu
+
+Titrace davky:
+- uvodni davky byvaji zamerne nizsi kvuli prevenci hypoglykemie
+- pokud jsou glykemie po jidle nebo ranni glykemie nalačno vyssi nez cil, davka se postupne navyšuje
+- titrace bazalniho analoga 1. generace obvykle po minimalne 2 dnech
+- titrace bazalniho analoga 2. generace obvykle po 3 dnech
+
+Citlivost na inzulin a korekcni faktor:
+- korekcni faktor rika, o kolik mmol/l snizi 1 jednotka kratkodobeho inzulinu glykemii
+- obvykle se pohybuje kolem 1-2 mmol/l, ale je individualni
+- rano byva inzulinova citlivost nizsi, po fyzicke aktivite naopak vyssi
+- pri stresu, infekci nebo zanetu se potreba inzulinu muze vyrazne zvysit
+
+Orientacni vypocet korekcniho faktoru - pravidlo 100:
+- korekcni faktor = 100 / celkova denni davka inzulinu
+- priklad: celkova denni davka 50 jednotek -> KF priblizne 2 mmol/l na 1 jednotku
+
+Priklad korekce vysoke glykemie:
+- aktualni glykemie 12 mmol/l
+- cilova glykemie 6 mmol/l
+- rozdil je 6 mmol/l
+- pokud je korekcni faktor 2, potreba korekcni davka je 3 jednotky
+
+Algoritmus vypoctu davky pred jidlem:
+1. Zjistete mnozstvi sacharidu v jidle.
+2. Zjistete inzulino-sacharidovy pomer.
+3. Spocitejte jidlovy bolus.
+4. Zmerte aktualni glykemii.
+5. Spocitejte korekcni slozku podle rozdilu aktualni a cilove glykemie.
+6. Celkova davka = jidlovy bolus + korekcni bolus, s ohledem na individualni zkusenost a aktivni inzulin.
+
+Konkretní priklad:
+- 2 bile rohliky, kazdy 22 g sacharidu = 44 g sacharidu celkem
+- inzulino-sacharidovy pomer 1:9
+- jidlovy bolus: 44 / 9 = 4,9 -> zaokrouhlene 5 jednotek
+- aktualni glykemie 13 mmol/l
+- cilova glykemie 6 mmol/l
+- rozdil 7 mmol/l
+- pravidlo 100 pri celkove denni davce 65 jednotek: 100 / 65 = 1,5
+- korekcni faktor 1,5 mmol/l na 1 jednotku
+- korekcni bolus: 7 / 1,5 = 4,7 -> orientacne 4-5 jednotek
+
+Poznamka:
+- vytitrovane davky nejsou trvale konstantni
+- meni se s vekem, vahou, menstruaci, menopauzou, infekci, stresem a fyzickou aktivitou
+- nutna je pravidelna kontrola glykemie a adekvatni uprava davek
+
+=== 5. Hypoglykemie ===
+
+Definice:
+- hypoglykemie u diabetika znamena glykemii pod 4 mmol/l
+
+Typicke priznaky:
+- tras, poceni, slabost, zavrat, zmatek
+- pri rychlem nebo hlubokem poklesu muze chybet cast priznaku
+- pri tezke hypoglykemii muze dojit k poruse vedomi nebo bezvedomi
+
+Lecba lehci nebo stredni hypoglykemie:
+- okamzite podat 15-20 g rychlych sacharidu
+- priklady: 6-8 tablet hroznoveho cukru, 150-200 ml koly, caj se 4-6 kostkami cukru, 2-3 lzice medu
+- za 15 minut znovu zkontrolovat glykemii
+- pokud glykemie zustava pod 3,9 mmol/l, postup opakovat
+
+Tezka hypoglykemie:
+- pri dezorientaci nebo poruse vedomi podat glukagon, je-li k dispozici
+- nikdy nepodavat tekutiny ani cukr do ust bezvedomemu pacientovi
+- okamzite volat rychlou zachrannou sluzbu 155
+
+Casta spoustece hypoglykemie:
+- vyssi davka inzulinu, nez odpovida sacharidum v jidle
+- zpozdene nebo vynechane jidlo po aplikaci inzulinu
+- fyzicka namaha bez snizeni davky inzulinu nebo bez doplneni sacharidu
+- vetsi mnozstvi alkoholu
+- zamena bazalniho a prandialniho inzulinu
+
+=== 6. Hyperglykemie a ketoacidoza ===
+
+Hyperglykemie:
+- vysoka glykemie pri relativnim nebo absolutnim nedostatku inzulinu
+- pozornost vyzaduji hodnoty kolem 15 mmol/l a vice
+- nad 20 mmol/l je riziko zvlast vysoke
+
+Priznaky hyperglykemie:
+- zizen
+- zvysene moceni
+- sucha kuze a sucho v krku
+- unava a zavrat
+
+Priznaky ketoacidozy:
+- acetonovy zapach dechu
+- nevolnost nebo zvraceni
+- bolest bricha
+- slabost
+- bezvedomi
+
+Prakticky postup:
+- pri pocinajici ketoacidoze podat rychle pusobici inzulin a kontrolovat glykemii i ketolatky, jsou-li dostupne
+- pokud se stav nelepsi nebo jsou priznaky vyrazne, vyhledat okamzitou lekarskou pomoc
+- u pumpy myslet na moznost preruseni dodavky inzulinu kanylou
+
+=== 7. Kontrola spravnosti lecby ===
+
+Samokontrola glukometrem:
+- idealne denne alespon 4bodove mereni
+- v nekterych dnech 8bodove mereni vcetne postprandialnich hodnot a nocni kontroly
+- pri kolisani glykemii nebo hypoglykemii merit casteji
+
+CGM:
+- senzor meri glukozu v podkozi kazdych 1-5 minut
+- vyuzivejte trendove sipky a hypo/hyper alarmy
+- pri nesouladu mezi pocitem a CGM overte hodnotu glukometrem
+
+Cilove hodnoty u dospelych:
+- glykemie nalačno 4,0-6,0 mmol/l
+- glykemie 1-2 hod po jidle 5,0-7,5 mmol/l
+- HbA1c: u DM2 obvykle pod 45 mmol/mol, u DM1 obvykle pod 48-53 mmol/mol
+- TIR alespon 70 %
+- TBR pod 4 %
+- TAR pod 25 %
+
+=== 8. Sport a fyzicka aktivita ===
+
+Obecna rizika:
+- hypoglykemie behem vykonu
+- hypoglykemie po vykonu, nekdy i 24 hodin po zatezi
+- hyperglykemie nebo ketoacidoza pri nedostatku inzulinu
+
+Zakladni pravidla:
+- merit glykemii pred, behem i po aktivite
+- pri delsi aktivite kontrolovat alespon jednou za hodinu, idealne casteji
+- nebezpecne je zacit intenzivne cvicit pri glykemii pod 5,5 mmol/l nebo nad 15 mmol/l
+- pred vytrvalostnim cvicenim casto pomaha 20-40 g sacharidu podle vychozi glykemie a zateze
+- pri hodinovem a delsim cviceni pocitat s prubeznym prijmem sacharidu 10-50 g za hodinu, pri beznejsich sportech casto 15-60 g za hodinu
+
+Doporuceni CDS pro aerobni aktivitu:
+- 15-30 g rychle pusobicich sacharidu kazdych 30-60 minut
+- pri vyssi inzulinemii muze byt potreba 30-60 g sacharidu za hodinu
+
+Redukce bolusove davky pred cvicenim, pokud aktivita nasleduje do 2,5 hodiny po jidle:
+- obvykle o 25-75 % podle intenzity a delky zateze
+
+Tabulka redukce bolusove davky pred cvicenim:
+- lehka aerobni aktivita, 30 minut: minus 25 %
+- lehka aerobni aktivita, 60 minut: minus 50 %
+- stredne tezka aerobni aktivita, 30 minut: minus 50 %
+- stredne tezka aerobni aktivita, 60 minut: minus 75 %
+- tezka aerobni aktivita, 30 minut: minus 75 %
+- intenzivni aerobni nebo odporova aktivita nad 80 % VO2max: redukce se bezne nedoporucuje
+
+Redukce bazalni davky:
+- po intenzivnejsi nebo delsi aktivite casto asi o 20 %
+- u vicehodinove nebo celodenni aerobni aktivity pri MDI dopredu asi o 20 %
+- u bazalnich analog 2. generace muze byt pro efekt treba redukce 48-72 hodin predem asi o 25 %
+- u CSII lze docasne snizit bazalni rychlost asi o 20-80 % priblizne 1 hodinu pred aktivitou
+
+Dalsi prakticka pravidla:
+- po odpoledni nebo vecerni zatezi je vyssi riziko nocni hypoglykemie
+- pri hypoglykemii pod 3,9 mmol/l aktivitu prerusit, podat rychle sacharidy a obnovit az po zlepseni
+- pri hyperglykemii pri aktivite lze nekdy zvazit asi 50 % korekcniho bolusu, ale po intenzivnim nebo odporovem cviceni muze glykemie klesnout spontanne
+
+=== 9. Prakticka aplikace inzulinu ===
+
+Vyber mista podle typu inzulinu:
+- bricho: nejrychlejsi vstrebavani, vhodne pro prandialni inzulin
+- paze: stredne rychle vstrebavani
+- stehna: stredne rychle vstrebavani, vhodne pro bazalni inzulin
+- hyzde: nejpomalejsi vstrebavani, vhodne pro bazalni inzulin
+
+Technika vpichu:
+- inzulin patri do podkozniho tuku, ne do svalu
+- uhel 90 stupnu pri dostatecne vrstve tuku
+- uhel 45 stupnu pri velmi tenke vrstve podkozi, idealne s kozni rasou
+
+Rotace mist vpichu:
+- nevstřikovat opakovane do stejneho bodu
+- rozestup mezi vpichy asi 3 cm
+- v ramci jedne oblasti postupovat systematicky po linii a pak se presunout o 3 cm vedle
+- stridat levou a pravou stranu tela po tydnech nebo jinym systematickym zpusobem
+- neaplikovat do zanetenych, bolestivych mist ani do lipohypertrofii
+
+Algoritmus aplikace perem:
+1. Zkontrolujte expiraci a vzhled inzulinu.
+2. NPH a premix pred aplikaci pomalu promichejte, netrepat.
+3. Umyjte ruce. Cistou kuzi neni nutne rutinne dezinfikovat.
+4. Nasadte novou jehlu.
+5. Provedte test pruchodnosti: nastavte 2 jednotky a vytlacte je do vzduchu.
+6. Nastavte ordinovanou davku.
+7. Provedte vpich.
+8. Stisknete pist a vyckejte 10 vterin s jehlou v kuzi.
+9. Po vytazeni zkontrolujte, ze v okynku je 0.
+
+Prakticke detaily:
+- pouzivane pero skladovat pri pokojove teplote do 25 C maximalne 28 dni
+- zasobni inzulin uchovavat v chladnicce 2-8 C, nesmi zmrznout
+- jehly menit po kazdem vpichu
+- fyzicka aktivita nad svalem, kam byl aplikovan inzulin, zrychluje vstrebavani a zvysuje riziko hypoglykemie
+- sauna, sluneni a horka vana take zrychluji vstrebavani inzulinu
+
+=== 10. Prakticke tabulky sacharidu ===
+
+Tabulka obsahu sacharidu - gramy sacharidu ve 100 g potraviny.
+
+Zelenina stredne sladka:
+- brokolice 5,7 g
+- celer bulvovy 7,4 g
+- celer rapikaty 5 g
+- cibule 9 g
+- cibulka jarni 4,8 g
+- dyne 9 g
+- fazolky zelene 7,1 g
+- kapusta hlavkova 5,5 g
+- kapusta ruzickova 6,3 g
+- kedlubna 5,4 g
+- kvetak 4,5 g
+- lilek 4,5 g
+- mrkev 9 g
+- paprika bila 4 g
+- paprika barevna 5-6 g
+- patizon 10,2 g
+- pazitka 7,2 g
+- petrzel 9,7 g
+- porek 6,8 g
+- rajcata 4-5 g
+- redkvicky nebo bila redkev 4 g
+- cervena repa 9,5 g
+- bile zeli 4,5 g
+- cervene zeli 6,5 g
+- kysane zeli 3,7 g
+
+Zelenina sladka a dalsi rostlinne zdroje:
+- cesnek 25 g
+- hrašek mrazeny 17 g
+- kren 15 g
+- kukurice 19 g
+- mungo klicky 41,5 g
+- pastinak 15 g
+- rajsky protlak 23 g
+- pasirovana rajcata 4,5 g
+- cerstve houby 3,8 g
+- susene houby 41 g
+- ovesne vlocky 58-63 g
+
+Ovoce:
+- boruvky 11,5 g
+- broskev 9,5 g
+- citron 9,2 g
+- grapefruit 10 g
+- hroznove vino 17 g
+- hruska 13,4 g
+- jablko 13 g
+- jahody 8,7 g
+- kaki 20 g
+- kiwi 9,7 g
+- mandarinka 9,4 g
+- mango 16,5 g
+- meloun cerveny 6 g
+- meloun zluty 9 g
+- merunka 12 g
+- nektarinka 8 g
+- ostruziny 12 g
+- pomelo 9,6 g
+- pomeranc 11 g
+- rybiz cerveny 12,8 g
+- rybiz cerny 17,2 g
+- svestky 14,7 g
+- tresne 14,4 g
+- visne 12,2 g
+- avokado 6 g
+- ananas 12,7 g
+- angrest 9,7 g
+- banan 26 g
+
+Prilohy a obilne produkty:
+- varene brambory 16 g
+- pecene brambory 20 g
+- hranolky 38 g
+- bramborova kase 25 g
+- varena ryze 28 g
+- varene testoviny 28 g
+- varena cocka 17 g
+- varene fazole nebo hrach 21 g
+- hotovy kuskus 25 g
+- hotova instantni polenta 17 g
+- varene jahly 24 g
+- varena pohanka 20 g
+- vareny bulgur 19 g
+- varena quinoa 21 g
+- varene ječné kroupy 25 g
+- houskovy knedlik 47 g
+- bramborovy knedlik 37 g
+- chleb typu Sumava 50 g
+- 100% zitny chleb 48 g
+- bily rohlik, houska, bageta nebo veka 60 g
+- celozrnny rohlik 55 g
+- knackebrot 55-65 g
+- bila psenicna mouka 74 g
+- celozrnna psenicna mouka 71 g
+- celozrnna zitna mouka 69 g
+- strouhanka 77 g
+- kukuricny nebo bramborovy skrob 87 nebo 83 g
+
+Orechy a semena:
+- arasidy 18 g
+- kesu 26 g
+- kokos strouhany 24 g
+- liskove orechy 11 g
+- mandle 19 g
+- para orechy nebo pistacie 28 g
+- pekanove nebo vlasske orechy 14 g
+
+Mlecne vyrobky a syry:
+- plnotucne mleko 4,7 g
+- polotucne mleko 4,8 g
+- acidofilni mleko nebo kefir 4 g
+- smetana ke slehani 3 g
+- bily jogurt 4,5-6 g
+- polotucny tvaroh 4,5 g
+- taveny syr 5 g
+- Lucina nebo balkansky syr 1 g
+- mozzarella nebo brynza 1 g
+- cottage nebo Gervais 3 g
+- tvrde syry 1-2 g
+- pomazankove maslo 5,5-7 g
+
+=== 11. Bezpecnostni shrnuti ===
+
+Zasady pro bezpecne rozhodovani:
+- pri nejasne klinicke situaci se opirejte o trend glykemii, aktivni inzulin, blizkost fyzicke aktivity a individualni zkusenost
+- v bezvedomi, tezke hypoglykemii nebo podezreni na ketoacidozu je potreba urgentni postup
+- pri sportu musi byt vzdy dostupne rychle sacharidy a moznost mereni glykemie
+- pri jakemkoli vypoctu davky je potreba uvazovat i aktivni inzulin a riziko zpozdene hypoglykemie

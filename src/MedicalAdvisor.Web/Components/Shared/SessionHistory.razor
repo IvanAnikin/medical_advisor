@@ -1,4 +1,6 @@
 @inject ConversationState ConversationState
+@inject AdvisorRegistry AdvisorRegistry
+@inject NavigationManager NavigationManager
 @inject IJSRuntime JS
 
 @if (ShowPopup)
@@ -28,6 +30,13 @@
                         <div class="session-card-content">
                             <div class="session-card-title">@session.Title</div>
                             <div class="session-card-meta">
+                                @if (!string.IsNullOrEmpty(session.AdvisorName))
+                                {
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined"
+                                             Color="Color.Primary" Class="advisor-chip">
+                                        @session.AdvisorName
+                                    </MudChip>
+                                }
                                 <span>@session.UpdatedAt.ToString("d.M. HH:mm")</span>
                                 <span class="session-card-dot">·</span>
                                 <span>@FormatMessageCount(session)</span>
@@ -61,6 +70,9 @@
     [Parameter]
     public EventCallback OnNewConversation { get; set; }
 
+    [Parameter]
+    public string CurrentAdvisorId { get; set; } = "diabetes";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -75,13 +87,14 @@
         await OnClose.InvokeAsync();
     }
 
-    public async Task SaveCurrentSession()
+    public async Task SaveCurrentSession(string advisorId, string advisorName)
     {
-        if (!ConversationState.HasUserMessages)
+        if (!ConversationState.HasUserMessages_ForAdvisor(advisorId))
             return;
 
-        var session = ConversationState.ToSession();
-        ConversationState.CurrentSessionId = session.Id;
+        var session = ConversationState.ToSession(advisorId, advisorName);
+        var state = ConversationState.GetOrCreate(advisorId);
+        state.CurrentSessionId = session.Id;
 
         // Replace existing or add new.
         var existing = _sessions.FindIndex(s => s.Id == session.Id);
@@ -105,9 +118,18 @@
     private async Task LoadSession(ConversationSession session)
     {
         // Save current conversation first if it has content.
-        await SaveCurrentSession();
+        await SaveCurrentSession(CurrentAdvisorId, AdvisorRegistry.GetById(CurrentAdvisorId)?.Name ?? "");
 
         ConversationState.LoadFromSession(session);
+
+        // Navigate to the correct advisor route if needed.
+        var sessionAdvisorId = string.IsNullOrEmpty(session.AdvisorId) ? "diabetes" : session.AdvisorId;
+        var advisor = AdvisorRegistry.GetById(sessionAdvisorId);
+        if (advisor is not null && advisor.Id != CurrentAdvisorId)
+        {
+            var url = advisor.IsDefault ? "/" : $"/{advisor.Slug}";
+            NavigationManager.NavigateTo(url);
+        }
 
         await OnSessionLoaded.InvokeAsync();
     }

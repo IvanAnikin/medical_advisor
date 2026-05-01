@@ -86,3 +86,4 @@ service-account*.json
 *.secrets
 token.json
 oauth2.json
+.deploy_publish/

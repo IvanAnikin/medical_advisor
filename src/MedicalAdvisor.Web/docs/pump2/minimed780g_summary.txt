@@ -1,0 +1,204 @@
+EM CD 37 Verze 02 • 2025-05 pikk • Edukační materiál pro pacienty • Centrum diabetologie IKEM • Kontakt: diaedukace@ikem.cz
+MINIMED 780G: REŽIMY FUNGOVÁNÍ
+Ruční režim
+• Ruční režim představuje klasickou léčbu inzulinovou pumpou. 
+• Pumpa vydává předem naprogramovanou bazální rychlost. 
+• Bolusy jsou podávány pomocí bolusového kalkulátoru či jako ruční 
+bolus.
+• Na pumpě lze nastavit dočasnou bazální rychlost. 
+• Na pumpě lze nastavit funkci Zastavení před nízkou glykémií.
+• Ruční režim funguje při používání senzoru i bez něj. 
+Systém MiniMed 780G může fungovat v ručním a v automatickém režimu. Uživatel hybridní smyčky by měl  
+>90% času trávit v automatickém režimu. Pokud tomu tak není, je nutné zjistit příčinu a vyřešit ji. 
+1/5
+Automatický režim “SmartGuard”
+• SmartGuard podává automatickou bazální dávku, kterou určí na 
+základě hladiny glukózy ze senzoru a historie výdeje inzulinu. 
+• Při stoupající či vysoké hladině glukózy systém podává automatické 
+korekční bolusy. 
+• Uživatel si aplikuje bolusy před jídlem pomocí bolusového kalkuláto-
+ru. Výši bolusu, kterou pumpa doporučí, uživatel nemůže změnit. 
+• Uživatel může využít funkci Dočasný cíl, která dočasně zvýší cílovou 
+glykémii a vypne výdej autokorekčních bolusů. 
+• SmartGuard funguje jen tehdy, pokud uživatel nosí glukózový senzor. 
+Ruční a automatický režim v Carelinku
+• Ve stažených datech z pumpy v programu Carelink lze sledo -
+vat, kolik % času tráví uživatel na senzoru a na SmartGuard.
+• Carelink zobrazí tabulku důvodů , proč je automatický režim 
+nejčastěji opouštěn, což může pomoci v řešení potíží. 
+Ruční režim
+Automatický režim “SmartGuard”
+---
+MINIMED 780G: FUNGOVÁNÍ SYSTÉMU
+Automatický bazál
+• Funkce SmartGuard určuje výši bazálu dle historie celkové 
+denní dávky inzulinu. 
+• Bazální dávka je pumpou podána každých 5 minut. 
+• Uživatel si může zvolit ze 3 hodnot hladiny glukózy, na které 
+bude automatický bazál cílit: 
+• 5,5 mmol/l
+• 6,1 mmol/l
+• 6,7 mmol/l
+• Při měnící se potřebě inzulinu může trvat několik dní, než se 
+systém nové dávce inzulinu přizpůsobí. 
+• Při ztrátě dat ze senzoru vydává SmartGuard ještě 4 hodiny 
+tzv. pevnou bazální dávku, pak se přepne do ručního režimu. 
+• Automatický bazál je v grafu zobrazen růžovým  sloupcem. 
+Každý uživatel by měl vědět, jak na pumpě 
+okamžitě zastavit výdej inzulinu. 
+ZASTAVENÍ VÝDEJE INZULINU
+2/5
+Autokorekční bolusy
+• Při stoupající glykémii může pumpa sama vydat autokorekční bolus. 
+• Autokorekční bolusy cílí na hodnotu glykémie 6,7 mmol/l. 
+• Autokorekční bolusy mohou být vydávány každých 5 minut. 
+• Autokorekční bolusy jsou v grafu zobrazeny modrým sloupcem. 
+• Autokorekční bolusy nejsou podávány při aktivní funkci Dočasného 
+cíle vyšší glykémie. 
+Bolusy k jídlu
+• Pro podání bolusu k jídlu zadá uživatel do bolusového kalkulátoru 
+sacharidy v plánovaném jídle. 
+• Uživatel nemůže výši pumpou doporučeného bolusu měnit . 
+• Bolus vydaný uživatelem je v grafu zobrazen modrým kolečkem. 
+Ostatní informace na obrazovce
+• Jídlo je zobrazeno žlutou  vidličkou. 
+• Kalibrace senzoru je zobrazeno červenou kapkou. 
+• Dočasný cíl je označen zelenými panáčky. 
+• Posunováním kurzoru lze listovat historií hodnot glukózy ze senzoru. 
+MiniMed 780G vydává automatickou bazální dávku a automatické korekční bolusy. Uživatel aplikuje bolusy před 
+jídlem s použitím bolusového kalkulátoru. Výši bolusu algoritmus určuje podle gramů sacharidů v jídle a dalších 
+parametrů, uživatel výši doporučeného bolusu nemůže měnit. 
+Nastavení cílové glukózy konzultujte s 
+ošetřujícím lékařem. 
+Pro většinu uživatelů systém nejlépe  
+funguje s cílem 5,5 mmol/l. 
+Někdy může být přínosné nastavení 
+vyššího cíle (6,1 nebo 6,7 mmol/l),  
+např. u: 
+• syndromu nerozpoznání  
+hypoglykémie
+• anamnéze těžkých hypoglykémií
+• aktivní diabetické retinopatii
+• vysokém glykovaném hemoglobinu
+NASTAVENÍ CÍLOVÉ GLUKÓZY
+Na domovské obrazovce se na možnost 
+zastavení výdeje inzulinu dostanete stisk-
+nutím směrového tlačítka nahoru . 
+EM CD 37 Verze 02 • 2025-05 pikk • Edukační materiál pro pacienty • Centrum diabetologie IKEM • Kontakt: diaedukace@ikem.cz
+---
+MINIMED 780G: FUNKCE DOČASNÉHO CÍLE
+Jak funkce Dočasný cíl funguje
+• Funkce Dočasný cíl zvýší cíl glykémie na 8,3 mmol/l. 
+• Během zapnuté funkce Dočasný cíl nejsou vydávány  
+autokorekční bolusy pumpou. 
+• Funkci Dočasný cíl je možné zapnout až na 24 hodin. 
+V Carelinku je dočasný cíl označen 
+zvýšenou tečkovanou čárou. 
+3/5
+MiniMed 780G nabízí funkci Dočasný cíl, která dokáže snížit riziko hypoglykémie při krátkodobě snížené potřebě 
+inzulinu. 
+Kdy může být přínosné funkci Dočasný cíl zapnout?
+• 90 minut před začátkem aerobní fyzické aktivity (např. chůze, kolo, 
+běh, plavání, práce na zahradě, běžky…).
+• V noci po déletrvající fyzické aktivitě během dne.
+• Při nedojedení jídla, na které byl již podán bolus.
+• Při náhlém výrazném snížení potřeby inzulinu. 
+Jak se funkce Dočasný cíl nastavuje
+• V hlavním menu se posuňte šipkou nahoru na nabídku SmartGuard. 
+• V nabídce SmartGuard zvolte možnost Dočasný cíl. 
+• Nastavte dobu trvání v hodinách a minutách. 
+• Potvrzením se ihned spustí dočasný cíl. 
+Jak poznám, že byla použita funkce Dočasný cíl?
+Zabrání Dočasný cíl hypoglykémii při fyzické aktivitě?
+Je-li funkce Dočasný cíl zapnuta s dostatečným předstihem, sníží 
+hladinu inzulinu v těle  a díky tomu sníží riziko hypoglykémie 
+během fyzické aktivity. 
+Pokles hladiny cukru však ovlivňují ještě další faktory (předchozí 
+bolusy, fyzická zdatnost či typ a délka trvání aktivity). 
+Pro prevenci hypoglykémie je někdy potřeba i dalších úprav: 
+snížení předchozího bolusu k jídlu či průběžné doplňování rychlých 
+sacharidů během pohybu. 
+Na pumpě je aktivní režim dočasného 
+cíle vyznačen zeleným pruhem.
+EM CD 37 Verze 02 • 2025-05 pikk • Edukační materiál pro pacienty • Centrum diabetologie IKEM • Kontakt: diaedukace@ikem.cz
+---
+MINIMED 780G: LÉČBA HYPOGLYKÉMIE
+Jak algoritmus reaguje na nízkou glykémii
+• Pokud algoritmus předpovídá pokles hladiny glukózy, preventivně 
+sníží či zcela vypne podávání inzulinu . 
+• Díky této automatické funkci je často možné rozvoji hypoglykémie 
+zabránit. 
+• Pokud hypoglykémie přesto nastane, bývá méně závažná a trvá kratší 
+dobu.  
+4/5
+Hypoglykémie je nízká hladina krevního cukru. Za hypoglykémii považujeme hodnotu <3,9 mmol/l, v těhotenství 
+a přípravě na něj <3,5 mmol/l. Léčba hypoglykémie se při používání uzavřeného okruhu liší od situace  
+na inzulinových perech. 
+Co dělat při hypoglykémii?
+Kdy hrozí hypoglykémie i při používání uzavřeného okruhu?
+• Při nadhodnocení množství sacharidů v jídle či nedojedení jídla. 
+• Při podání jídelního bolusu až  po jídle. 
+• Při zasahování do algoritmu zadáváním falešných sacharidů .
+• Při vypínání algoritmu pro podávání ručních korekčních bolusů .
+• Během fyzické aktivity a v období až 24h po ní. 
+• Po konzumaci alkoholu. 
+• U hybridního okruhu je na léčbu hypoglykémie potřeba méně  
+sacharidů, protože systém již dopředu zastavil podávání inzulinu. 
+• Hypoglykémii léčíme pouze rychlými sacharidy. Není třeba již  
+konzumovat škroby, protože místo nich systém vydává nižší  
+automatický bazál. Škroby lze zvážit v situacích zvýšeného rizika 
+návratu hypoglykémie (po fyzické aktivitě či alkoholu). 
+• Obvykle stačí 5-15g rychlých sacharidů . 
+• Vyvarujte se nadměrné konzumaci sacharidů při hypoglykémii, která 
+může vést k rozkolísání glykémií. 
+• Do systému MiniMed 780G nezadávejte sacharidy, které konzumujete 
+na léčbu hypoglykémie. Případnou vysokou glykémii po přehnané  
+konzumaci sacharidů nechte automaticky zkorigovat algoritmus.  
+EM CD 37 Verze 02 • 2025-05 pikk • Edukační materiál pro pacienty • Centrum diabetologie IKEM • Kontakt: diaedukace@ikem.cz
+---
+MINIMED 780G: ZVLÁDÁNÍ JÍDEL
+Jak podat bolus na jídlo
+• Bolus na jídlo lze v automatickém režimu podat pouze pomocí bolusového 
+kalkulátoru. 
+• Do kalkulátoru zadejte odhadované nebo spočítané množství sacharidů  
+v jídle. 
+• Nepočítáte-li sacharidy a máte-li předepsaný rámcový jídelníček, poraďte 
+se se svým nutričním terapeutem či diabetologickou edukační sestrou, kolik 
+sacharidů máte na jídla do pumpy zadávat. 
+• Pumpou doporučenou výši bolusu již nelze měnit. 
+• Bolusy je doporučeno podávat před jídlem. Podání bolusů po jídle může 
+vést k hyperglykémii (bolus byl podán pozdě) a k hypoglykémii  
+(SmartGuard při stoupající glykémii podá zvýšený bazál a autokorekční 
+bolusy a další uživatelem podaný bolus je již navíc). 
+OPATRNĚ NA FALEŠNÉ SACHARIDY
+5/5
+Jak zvládat pomalu trávená jídla?
+Zvládání jídel je u MiniMed 780G v automatickém režimu snadné, o úpravu glykémií při nepřesném odhadu jídla 
+se stará automatický algoritmus. 
+• Pokud se po jídle s nízkým glykemickým indexem 
+vyskytují hypoglykémie, může být vhodné zadat 
+před jídlem pouze část sacharidů a nechat se o 
+zbytek postarat Smartguard. 
+• Jídla obsahující větší množství tuků a bílkovin 
+mohou zvyšovat glykémii i mnoho hodin po jídle. 
+Existuje několik možných strategií, jak tato jídla 
+zvládat na pumpě MiniMed 780G: 
+• Lze aplikovat běžný bolus před jídlem a nechat 
+se o zbytek postarat Smartguard. 
+• Lze aplikovat běžný bolus před jídlem a  
+2-3 hodiny po jídle zadat další bolus formou  
+tzv. sacharidového ekvivalentu, tj. zadat  
+množství sacharidů, které odpovídá 25-30%  
+velikosti původního bolusu před jídlem, nebo 
+které odpovídá spočítaným tukoproteinovým  
+jednotkám v jídle.  
+Nezadávejte do pumpy sacharidy, které jste ve skutečnosti nesnědli, 
+ve snaze korigovat vysoké glykémie. Nejbezpečněji snižuje  
+hyperglykémii sám SmartGuard. 
+Zadávání tzv. falešných sacharidů negativně ovlivňuje algoritmus. 
+Může to vést k rozkolísání glykémií i v následujících dnech. 
+Pro správné určení citlivosti na inzulin pro další den navíc algoritmus 
+potřebuje min. 5 hodin bez zadání sacharidů. Při používání falešných 
+sacharidů tato podmínka nemusí být splněna a algoritmus pak  
+funguje méně efektivně.
+EM CD 37 Verze 02 • 2025-05 pikk • Edukační materiál pro pacienty • Centrum diabetologie IKEM • Kontakt: diaedukace@ikem.cz

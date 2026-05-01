@@ -10,4 +10,8 @@ public class ChatMessage
     public bool IsStreaming { get; set; }
     public List<string> QuickReplies { get; set; } = [];
     public bool ShowQuickReplies { get; set; } = true;
+    public bool HasDoseGuidanceWarning { get; set; }
+    public bool ShowEmergencyCallButton { get; set; }
+    public string? DetectedLanguage { get; set; }
+    public string? AdvisorId { get; set; }
 }

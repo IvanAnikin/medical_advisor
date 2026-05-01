@@ -1,23 +1,26 @@
 @page "/"
+@page "/{Slug}"
 @inject MedicalAdvisorService AdvisorService
 @inject ConversationState ConversationState
+@inject AdvisorRegistry AdvisorRegistry
+@inject NavigationManager NavigationManager
 @inject ThemeService ThemeService
 @inject IJSRuntime JS
 @implements IDisposable
 
-<PageTitle>Diabetologický poradce</PageTitle>
+<PageTitle>@(_currentAdvisor?.Name ?? "Poradce")</PageTitle>
 
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages" @onscroll="OnScroll">
         <MudContainer MaxWidth="MaxWidth.Medium">
-            @foreach (var message in ConversationState.Messages)
+            @foreach (var message in _currentState.Messages)
             {
                 <ChatMessageBubble Message="message" />
 
                 @* Welcome cards -- shown after the first (welcome) message *@
-                @if (message == ConversationState.Messages[0] && _showWelcomeCards)
+                @if (message == _currentState.Messages[0] && _showWelcomeCards)
                 {
-                    <WelcomeCards OnTopicSelected="OnTopicSelected" />
+                    <WelcomeCards OnTopicSelected="OnTopicSelected" Advisor="_currentAdvisor" />
                 }
 
                 @* Quick-reply buttons -- shown below assistant messages that have them *@
@@ -71,6 +74,11 @@
     private bool _userScrolledUp;
     private MudTextField<string>? _inputField;
     private CancellationTokenSource? _cts;
+    private AdvisorConfig _currentAdvisor = default!;
+    private AdvisorConversationState _currentState = new();
+
+    [Parameter]
+    public string? Slug { get; set; }
 
     [CascadingParameter]
     public MainLayout? Layout { get; set; }
@@ -78,6 +86,39 @@
     protected override void OnInitialized()
     {
         ThemeService.OnThemeChanged += OnThemeChanged;
+        ResolveAdvisor();
+    }
+
+    protected override void OnParametersSet()
+    {
+        ResolveAdvisor();
+    }
+
+    private void ResolveAdvisor()
+    {
+        AdvisorConfig? advisor = null;
+
+        if (!string.IsNullOrEmpty(Slug))
+        {
+            advisor = AdvisorRegistry.GetBySlug(Slug);
+            if (advisor is null)
+            {
+                NavigationManager.NavigateTo("/", replace: true);
+                return;
+            }
+        }
+
+        advisor ??= AdvisorRegistry.GetDefault();
+
+        if (_currentAdvisor?.Id == advisor.Id)
+            return;
+
+        _currentAdvisor = advisor;
+        ConversationState.EnsureWelcomeMessage(_currentAdvisor.Id, _currentAdvisor.WelcomeMessage);
+        _currentState = ConversationState.GetOrCreate(_currentAdvisor.Id);
+        _showWelcomeCards = !ConversationState.HasUserMessages_ForAdvisor(_currentAdvisor.Id);
+
+        Layout?.NotifyAdvisorChanged(_currentAdvisor);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -116,7 +157,7 @@
     private async Task OnQuickReplySelected(string reply)
     {
         // Hide quick replies on all messages when one is selected.
-        foreach (var msg in ConversationState.Messages)
+        foreach (var msg in _currentState.Messages)
         {
             msg.ShowQuickReplies = false;
         }
@@ -133,7 +174,7 @@
         _showWelcomeCards = false;
 
         // Hide quick replies on all messages when user types manually.
-        foreach (var msg in ConversationState.Messages)
+        foreach (var msg in _currentState.Messages)
         {
             msg.ShowQuickReplies = false;
         }
@@ -149,7 +190,7 @@
         _userScrolledUp = false;
 
         // Add user message to UI display list only (service manages ChatHistory).
-        ConversationState.Messages.Add(new ChatMessage
+        _currentState.Messages.Add(new ChatMessage
         {
             Role = ChatRole.User,
             Content = input,
@@ -166,7 +207,7 @@
             Timestamp = DateTime.Now,
             IsStreaming = true
         };
-        ConversationState.Messages.Add(streamingMessage);
+        _currentState.Messages.Add(streamingMessage);
         RequestScrollToBottom();
         StateHasChanged();
 
@@ -174,7 +215,8 @@
 
         try
         {
-            await foreach (var chunk in AdvisorService.StreamResponseAsync(input, ConversationState, streamingMessage, _cts.Token))
+            await foreach (var chunk in AdvisorService.StreamResponseAsync(
+                input, ConversationState, streamingMessage, _cts.Token, _currentAdvisor.Id))
             {
                 streamingMessage.Content += chunk;
                 RequestScrollToBottom();

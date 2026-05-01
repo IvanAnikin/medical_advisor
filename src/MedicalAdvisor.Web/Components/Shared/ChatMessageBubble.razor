@@ -21,6 +21,30 @@
             <span class="message-text">
                 @((MarkupString)RenderContent(Message.Content))
             </span>
+
+            @if (Message.Role == ChatRole.Assistant && Message.HasDoseGuidanceWarning)
+            {
+                <div class="message-flag message-warning-banner">
+                    <MudIcon Icon="@Icons.Material.Filled.Info" Class="message-flag-icon" />
+                    @if (Message.AdvisorId == "diabetes-2")
+                    {
+                        <span class="dose-warning-text" style="white-space: pre-line;">@GetDiabetes2DisclaimerText()</span>
+                    }
+                    else
+                    {
+                        <span>@GetDoseWarningText()</span>
+                    }
+                </div>
+            }
+
+            @if (Message.Role == ChatRole.Assistant && Message.ShowEmergencyCallButton)
+            {
+                <a class="message-flag message-emergency-button" href="tel:155">
+                    <MudIcon Icon="@Icons.Material.Filled.Call" Class="message-flag-icon" />
+                    <span>@GetEmergencyButtonText()</span>
+                </a>
+            }
+
         }
         <div class="message-timestamp">
             @Message.Timestamp.ToString("HH:mm")
@@ -55,5 +79,34 @@
         escaped = escaped.Replace("\n", "<br />");
 
         return escaped;
+    }
+
+    private string GetDoseWarningText()
+    {
+        return DoseWarningHelpers.GetShortDoseWarningText(Message.DetectedLanguage);
+    }
+
+    private string GetDiabetes2DisclaimerText()
+    {
+        return DoseWarningHelpers.GetDiabetes2DisclaimerText();
+    }
+
+    private string GetEmergencyButtonText()
+    {
+        return GetNormalizedLanguage() switch
+        {
+            "cs" => "Volat 155",
+            _ => "Call 155"
+        };
+    }
+
+    private string GetNormalizedLanguage()
+    {
+        if (string.IsNullOrWhiteSpace(Message.DetectedLanguage))
+            return "en";
+
+        return Message.DetectedLanguage.StartsWith("cs", StringComparison.OrdinalIgnoreCase)
+            ? "cs"
+            : "en";
     }
 }

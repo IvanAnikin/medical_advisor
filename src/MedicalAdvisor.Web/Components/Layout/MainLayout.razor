@@ -1,6 +1,8 @@
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject ThemeService ThemeService
+@inject AdvisorRegistry AdvisorRegistry
+@inject ConversationState ConversationState
 @inject IJSRuntime JS
 
 <MudThemeProvider Theme="ThemeService.CurrentMudTheme" IsDarkMode="ThemeService.IsDarkMode" />
@@ -13,7 +15,13 @@
         @if (!_headerCollapsed)
         {
             <div class="app-header-row">
-                <a href="/" class="app-bar-title" @onclick="ReloadPage" @onclick:preventDefault>Diabetologický poradce</a>
+                <div class="d-flex align-center gap-2">
+                    <AdvisorSelector CurrentAdvisorId="@(_currentAdvisor?.Id ?? "")" />
+                    <a href="@(_currentAdvisor is { IsDefault: false } ? $"/{_currentAdvisor.Slug}" : "/")"
+                       class="app-bar-title" @onclick="ReloadPage" @onclick:preventDefault>
+                        @(_currentAdvisor?.Name ?? "Poradce")
+                    </a>
+                </div>
             </div>
             <div class="app-header-row app-header-controls">
                 <button class="session-history-btn" @onclick="ToggleSessionPopup" title="Historie konverzací">
@@ -34,12 +42,19 @@
     </div>
 
     @* Session history popup rendered at root level to escape header stacking context *@
-    <SessionHistory @ref="_sessionHistory" OnSessionLoaded="OnSessionLoaded" ShowPopup="_showSessionPopup" OnClose="CloseSessionPopup" />
+    <SessionHistory @ref="_sessionHistory"
+                    OnSessionLoaded="OnSessionLoaded"
+                    ShowPopup="_showSessionPopup"
+                    OnClose="CloseSessionPopup"
+                    CurrentAdvisorId="@(_currentAdvisor?.Id ?? "diabetes")" />
 </div>
 
 @code {
+    private AdvisorConfig? _currentAdvisor;
+
     protected override void OnInitialized()
     {
+        _currentAdvisor = AdvisorRegistry.GetDefault();
         ThemeService.OnThemeChanged += OnThemeChanged;
     }
 
@@ -47,10 +62,19 @@
     private bool _showSessionPopup;
     private SessionHistory? _sessionHistory;
 
+    public void NotifyAdvisorChanged(AdvisorConfig advisor)
+    {
+        if (_currentAdvisor?.Id != advisor.Id)
+        {
+            _currentAdvisor = advisor;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
     public async Task SaveCurrentSessionAsync()
     {
-        if (_sessionHistory is not null)
-            await _sessionHistory.SaveCurrentSession();
+        if (_sessionHistory is not null && _currentAdvisor is not null)
+            await _sessionHistory.SaveCurrentSession(_currentAdvisor.Id, _currentAdvisor.Name);
     }
 
     private void OnSessionLoaded()

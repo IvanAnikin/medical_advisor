@@ -1,28 +1,81 @@
-<div class="welcome-cards" role="group" aria-label="Témata k výběru">
-    @foreach (var card in _cards)
-    {
-        <div class="welcome-card" @onclick="() => OnCardClicked(card.Topic)" role="button" tabindex="0"
-             @onkeydown="(e) => OnCardKeyDown(e, card.Topic)" aria-label="@card.Topic">
-            <MudIcon Icon="@card.Icon" Class="welcome-card-icon" />
-            <span class="welcome-card-title">@card.Title</span>
-            <span class="welcome-card-subtitle">@card.Subtitle</span>
-        </div>
-    }
-</div>
+@if (_cards.Length > 0)
+{
+    <div class="welcome-cards" role="group" aria-label="Témata k výběru">
+        @foreach (var card in _cards)
+        {
+            <div class="welcome-card" @onclick="() => OnCardClicked(card.Topic)" role="button" tabindex="0"
+                 @onkeydown="(e) => OnCardKeyDown(e, card.Topic)" aria-label="@card.Topic">
+                <MudIcon Icon="@card.Icon" Class="welcome-card-icon" />
+                <span class="welcome-card-title">@card.Title</span>
+                <span class="welcome-card-subtitle">@card.Subtitle</span>
+            </div>
+        }
+    </div>
+}
 
 @code {
     [Parameter]
     public EventCallback<string> OnTopicSelected { get; set; }
 
+    [Parameter]
+    public AdvisorConfig? Advisor { get; set; }
+
     private record CardInfo(string Icon, string Title, string Subtitle, string Topic);
 
-    private static readonly CardInfo[] _cards =
+    private static readonly CardInfo[] _diabetesCards =
     [
         new(Icons.Material.Filled.Vaccines, "Léčba inzulínem", "Zahájení, typy, dávkování", "Léčba inzulínem"),
         new(Icons.Material.Filled.MonitorHeart, "Monitorace glukózy", "Systémy, interpretace", "Monitorace glukózy (CGM)"),
         new(Icons.Material.Filled.Accessibility, "Péče o nohy", "Prevence, rizika", "Péče o nohy"),
         new(Icons.Material.Filled.FitnessCenter, "Fyzická aktivita", "Doporučení, typy", "Fyzická aktivita"),
     ];
+
+    private static readonly CardInfo[] _gestationalCards =
+    [
+        new(Icons.Material.Filled.Restaurant, "Jídelníček", "Dietní opatření, sacharidy", "Jídelníček při gestačním diabetu"),
+        new(Icons.Material.Filled.MonitorHeart, "Měření glykémie", "Cílové hodnoty, selfmonitoring", "Měření glykémie v těhotenství"),
+        new(Icons.Material.Filled.Vaccines, "Léčba inzulínem", "Kdy je potřeba, jak funguje", "Léčba inzulínem při gestačním diabetu"),
+        new(Icons.Material.Filled.ChildCare, "Rizika a porod", "Prevence komplikací, poporodní péče", "Rizika a porod při gestačním diabetu"),
+    ];
+
+    private static readonly CardInfo[] _diabetes2Cards =
+    [
+        new(Icons.Material.Filled.Calculate, "Výpočet dávky", "Sacharidy, korekce, bolus", "Chci spočítat dávku inzulinu k jídlu a korekci."),
+        new(Icons.Material.Filled.Restaurant, "Sacharidy v jídle", "Potraviny, odhady, tabulky", "Chci odhadnout sacharidy v běžném jídle."),
+        new(Icons.Material.Filled.WarningAmber, "Hypoglykémie", "Rychlá léčba, glukagon, kdy volat pomoc", "Mám hypoglykémii a potřebuji rychlý postup."),
+        new(Icons.Material.Filled.FitnessCenter, "Sport a inzulín", "Úpravy dávek, sacharidy, prevence hypa", "Chci upravit inzulin a sacharidy před sportem."),
+    ];
+
+    private static readonly CardInfo[] _pumpCards =
+    [
+        new(Icons.Material.Filled.SettingsInputComponent, "Hybridní uzavřený okruh", "Jak funguje, co dělá automaticky", "Hybridní uzavřený okruh"),
+        new(Icons.Material.Filled.Vaccines, "Dávkování inzulinu", "Bazál, bolusy, korekce", "Dávkování inzulinu pumpou"),
+        new(Icons.Material.Filled.Sensors, "Senzor Dexcom", "Výměna, zahřívání, přesnost", "Senzor Dexcom"),
+        new(Icons.Material.Filled.FitnessCenter, "Speciální režimy", "Spánek, sport, odpojení", "Speciální režimy pumpy"),
+    ];
+
+    private static readonly CardInfo[] _pump2Cards =
+    [
+        new(Icons.Material.Filled.SettingsInputComponent, "SmartGuard režim", "Automatický bazál, autokorekce", "Automatický režim SmartGuard"),
+        new(Icons.Material.Filled.Restaurant, "Zvládání jídel", "Bolusy, kalkulátor, pomalá jídla", "Zvládání jídel na pumpě MiniMed 780G"),
+        new(Icons.Material.Filled.FitnessCenter, "Dočasný cíl", "Sport, prevence hypoglykémie", "Funkce Dočasný cíl při fyzické aktivitě"),
+        new(Icons.Material.Filled.LocalHospital, "Léčba hypoglykémie", "Sacharidy, reakce algoritmu", "Léčba hypoglykémie na uzavřeném okruhu"),
+    ];
+
+    private CardInfo[] _cards = _diabetesCards;
+
+    protected override void OnParametersSet()
+    {
+        _cards = Advisor?.Id switch
+        {
+            "diabetes" or null => _diabetesCards,
+            "diabetes-2" => _diabetes2Cards,
+            "gestational-diabetes" => _gestationalCards,
+            "insulin-pump" => _pumpCards,
+            "insulin-pump-2" => _pump2Cards,
+            _ => []
+        };
+    }
 
     private async Task OnCardClicked(string topic)
     {

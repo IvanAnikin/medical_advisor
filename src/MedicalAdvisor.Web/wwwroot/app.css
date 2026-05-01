@@ -392,6 +392,45 @@ html, body {
     opacity: 1;
 }
 
+.message-flag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.message-flag-icon {
+    font-size: 18px !important;
+    flex-shrink: 0;
+}
+
+.message-warning-banner {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: var(--text-primary);
+}
+
+.message-emergency-button {
+    justify-content: center;
+    background: #d23f3f;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.message-emergency-button:hover {
+    color: #fff;
+    opacity: 0.95;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+}
+
 /* ===== Typing Indicator ===== */
 .typing-indicator {
     display: inline-flex;
@@ -952,6 +991,44 @@ html, body {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/* ===== Advisor Selector ===== */
+.advisor-selector-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1299;
+}
+
+.advisor-selector-popover {
+    z-index: 1300 !important;
+}
+
+.advisor-item:hover {
+    background: var(--bg-surface-hover) !important;
+}
+
+.advisor-item.active {
+    background: var(--accent-light) !important;
+}
+
+.advisor-dark.advisor-selector-popover .mud-paper,
+.advisor-dark .mud-paper {
+    background: #1E1F25 !important;
+    color: #E4E6EB !important;
+}
+
+.advisor-dark .advisor-item:hover {
+    background: #2F3040 !important;
+}
+
+.advisor-dark .advisor-item.active {
+    background: #333650 !important;
+}
+
+.advisor-chip {
+    font-size: 11px;
+    height: 20px;
 }
 
 /* ===== Blazor Error UI ===== */
